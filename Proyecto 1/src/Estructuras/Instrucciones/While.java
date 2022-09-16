@@ -34,12 +34,19 @@ public class While implements Instruccion{
      * @param ts tabla de símbolos del ámbito padre de la sentencia
      * @return Esta instrucción retorna nulo porque no produce ningun valor
      */
+   
+
     @Override
-    public String traducir() {
-        String traduccion = "Mientras esta condicion se cumpla "+condicion.traducir()+" tenemos que hacer:\n";
+    public String traducirPython() {
+        String traduccion = "Mientras esta condicion se cumpla "+condicion.traducirPython()+" tenemos que hacer:\n";
         for(Instruccion ins:listaInstrucciones){
-            traduccion +=ins.traducir();
+            traduccion +=ins.traducirPython();
         }
         return traduccion;
-    }   
+    }
+
+    @Override
+    public String traducirGo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

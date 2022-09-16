@@ -16,8 +16,15 @@ public class Evaluar implements Instruccion{
         this.valor = valor;
     }   
 
+ 
+
     @Override
-    public String traducir() {
-        return "estamos evaluando (" + valor.traducir() + ")\n";
+    public String traducirPython() {
+       return "estamos evaluando (" + valor.traducirPython()+ ")\n";
+    }
+
+    @Override
+    public String traducirGo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

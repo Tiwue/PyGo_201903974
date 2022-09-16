@@ -45,11 +45,11 @@ parser code
     }
 :} 
 
-terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER;
-terminal String MAS,MENOS,POR,DIVIDIDO;
-terminal String MENQUE,MAYQUE;
-terminal String AND;
-terminal String ENTERO;
+terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE;
+terminal String MAS,MENOS,POR,DIVIDIDO,RPOTENCIA,RMOD,RMAYOR,RMENOR,RMAYORIGUAL,RMENORIGUAL, RIGUAL, RDIFERENTE, ROR, RAND, RNOT, RINICIO, RFIN;
+terminal String ENTERO, CARACTER, CADENA;
+terminal String RVERDADERO,RFALSO;
+
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
@@ -62,13 +62,17 @@ non terminal Produccion expresion;
 non terminal Produccion expresion_relacional;
 non terminal Produccion else_ifs;
 
+precedence left ROR;
+precedence left RAND;
+precedence right RNOT;
 precedence left MAS,MENOS;
-precedence left POR,DIVIDIDO;
+precedence left POR,DIVIDIDO,RMOD;
+precedence left RPOTENCIA;
 precedence right UMENOS; 
 
 start with ini; 
 
-ini::=instrucciones:a                           {:
+ini::=RINICIO instrucciones:a RFIN                         {:
                                                     //se guarda el AST, que es la lista principal de instrucciones en la variable
                                                     //AST que se definió dentro del parser
                                                     parser.AST=a.getInstructions();
@@ -88,7 +92,9 @@ instrucciones ::=
                                                     RESULT=new Produccion(new Nodo("Instrucciones"), new LinkedList<>());
                                                     RESULT.addIns(a.getIns());
                                                     RESULT.addSon(a);
-                                                :} 
+                                                :}        
+ | error instruccion 
+
 ; 
 
 instruccion ::= 
@@ -195,31 +201,102 @@ expresion  ::=
                                                     RESULT.addSon("/");
                                                     RESULT.addSon(b);
                                                 :}
- |  ENTERO:a                                    {:
-                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.NUMERO));
+|  expresion:a RPOTENCIA   expresion:b          {:                                                
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(),Operacion.Tipo_operacion.POTENCIA));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("potencia");
+                                                    RESULT.addSon(b);
                                                 :}
- |  DECIMAL:a                                   {:
-                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.NUMERO));
+|  expresion:a RMOD   expresion:b          {:                                                
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(),Operacion.Tipo_operacion.MODULO));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("mod");
+                                                    RESULT.addSon(b);
                                                 :}
- |  PARIZQ expresion:a PARDER                   {:
-                                                    RESULT=new Produccion(new Nodo("Expresion"), a.getIns());
+|  PARIZQ expresion:a PARDER                    {:                                                
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion((Operacion)a.getIns(),Operacion.Tipo_operacion.PARENTESIS));
                                                     RESULT.addSon("(");
                                                     RESULT.addSon(a);
                                                     RESULT.addSon(")");
                                                 :}
+ |  ENTERO:a                                    {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.NUMERO));
+                                                :}
+ |  DECIMAL:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.NUMERO));          
+                                                :}
+ |  CADENA:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.CADENA));
+                                                :}
+|  CARACTER:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.CARACTER));
+                                                :}
+|   COMSIMPLE:a DOLAR:b LLAVIZQ:c ENTERO:d LLAVDER:e COMSIMPLE:f                                 {:
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion(a,Operacion.Tipo_operacion.CARACTER));
+                                                    RESULT.addSon(a+b+c+d+e+f);
+                                                :}
+|  RVERDADERO:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
+                                                :}
+|  RFALSO:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
+                                                :}
 ;
 
 expresion_relacional  ::= 
-   expresion:a  MAYQUE   expresion:b            {:
+ expresion:a  RMAYOR   expresion:b            {:
                                                     RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.MAYOR_QUE));
                                                     RESULT.addSon(a);
-                                                    RESULT.addSon(">");
+                                                    RESULT.addSon("mayor");
                                                     RESULT.addSon(b);
                                                 :} 
- | expresion:a  MENQUE   expresion:b            {:
+|expresion:a  RMENOR   expresion:b            {:
                                                     RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.MENOR_QUE));
                                                     RESULT.addSon(a);
-                                                    RESULT.addSon("<");
+                                                    RESULT.addSon("menor");
+                                                    RESULT.addSon(b);
+                                                :} 
+|expresion:a  RMAYORIGUAL   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.MAYOR_IGUAL_QUE));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("mayor_o_igual");
+                                                    RESULT.addSon(b);
+                                                :} 
+|expresion:a  RMENORIGUAL   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.MENOR_IGUAL_QUE));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("menor_o_igual");
+                                                    RESULT.addSon(b);
+                                                :} 
+|expresion:a  RIGUAL   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.IGUAL));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("igual");
+                                                    RESULT.addSon(b);
+                                                :}
+|expresion:a  RDIFERENTE   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.DIFERENTE));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("diferente");
                                                     RESULT.addSon(b);
                                                 :}  
+
+|expresion:a RAND expresion:b                  {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Logica"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.AND));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("and");
+                                                    RESULT.addSon(b);
+                                                :}
+|expresion:a  ROR   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Logica"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.OR));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("or");
+                                                    RESULT.addSon(b);
+                                                :}
+|expresion:a  RNOT   expresion:b            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.NOT));
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("not");
+                                                    RESULT.addSon(b);
+                                                :}
 ;

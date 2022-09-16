@@ -11,5 +11,7 @@ package Estructuras.Instrucciones;
 import Estructuras.Nodo;
 
 public interface Instruccion {
-    public String traducir();
+
+    public String traducirPython();
+    public String traducirGo();
 }

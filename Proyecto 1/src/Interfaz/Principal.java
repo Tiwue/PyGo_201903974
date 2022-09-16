@@ -249,22 +249,27 @@ public class Principal extends javax.swing.JFrame {
         try {
             
             errores = new listaErrores();
-            
+            instrucciones= new LinkedList<>();
+            traduccionPython = "";
+            traduccionGolang = "";
             analizadores.Sintactico sintactico = new analizadores.Sintactico(
             new analizadores.Lexico(new BufferedReader(new StringReader(texto))));
             //analizando
             sintactico.parse();
-            this.arbol= sintactico.getArbol();
+            //this.arbol= sintactico.getArbol();
             instrucciones=sintactico.getAST();
             imprimir("Analisis hecho");
             if (errores.isEmpty()){
-                
+                traduccionPython = traducirIntruccionesPython(instrucciones);
+                //traduccionGolang = traducirIntruccionesGo(instrucciones);
+                textArea_Go.setText(traduccionGolang);
+                textArea_Python.setText(traduccionPython);
             }else{
                 imprimir("Se encontraton Errores en la entrada\n Generando Reporte de  Errores...");
                 generarReporteErrores();
             }
         } catch (Exception ex) {
-            System.out.println("No se pudo realizar el analisis");
+            ex.printStackTrace();
         } 
     }
      
@@ -275,7 +280,7 @@ public class Principal extends javax.swing.JFrame {
     Consola.setText(cadena);
     } 
     
-    public String traducirIntrucciones(LinkedList<Instruccion> instrucciones) {
+    public String traducirIntruccionesPython(LinkedList<Instruccion> instrucciones) {
         if(instrucciones==null){
             return("No es posible ejecutar las instrucciones porque\r\n"
                     + "el árbol no fue cargado de forma adecuada por la existencia\r\n"
@@ -291,7 +296,29 @@ public class Principal extends javax.swing.JFrame {
             //será inválida y se cargará como null, por lo tanto no deberá ejecutarse
             //es por esto que se hace esta validación.
             if(ins!=null)
-                traduccion += ins.traducir();
+                traduccion += ins.traducirPython();
+        }
+        
+        return traduccion;
+    }
+    
+    public String traducirIntruccionesGo(LinkedList<Instruccion> instrucciones) {
+        if(instrucciones==null){
+            return("No es posible ejecutar las instrucciones porque\r\n"
+                    + "el árbol no fue cargado de forma adecuada por la existencia\r\n"
+                    + "de errores léxicos o sintácticos.");
+        }
+        //Se ejecuta cada instruccion en el ast, es decir, cada instruccion de 
+        //la lista principal de instrucciones.
+        
+        String traduccion = "";
+        
+        for(Instruccion ins:instrucciones){
+            //Si existe un error léxico o sintáctico en cierta instrucción esta
+            //será inválida y se cargará como null, por lo tanto no deberá ejecutarse
+            //es por esto que se hace esta validación.
+            if(ins!=null)
+                traduccion += ins.traducirGo();
         }
         
         return traduccion;
@@ -383,4 +410,5 @@ public class Principal extends javax.swing.JFrame {
     public static listaErrores errores;
     public Arbol arbol;
     public LinkedList<Instruccion> instrucciones;
+    public String traduccionPython, traduccionGolang;
 }

@@ -69,26 +69,32 @@ public class If implements Instruccion{
      * @return Estra instrucción retorna nulo porque no produce ningún valor en 
      * su ejecución
      */
+ 
+
     @Override
-    public String traducir() {
-        
-        String traduccion = "Este es un IF para la OP "+this.condicion.traducir()+":\n";
+    public String traducirPython() {
+        String traduccion = "Este es un IF para la OP "+this.condicion.traducirPython()+":\n";
         if(listaInstrucciones != null)
             for(Instruccion ins: listaInstrucciones){
-                traduccion += ins.traducir();
+                traduccion += ins.traducirPython();
             }
         if(listaElseIfInstrucciones != null){
             traduccion += "Si no se cumple entonces ";
             for(Instruccion ins: listaElseIfInstrucciones){
-                traduccion += ins.traducir();
+                traduccion += ins.traducirPython();
             }
         }
         if(listaInsElse != null){
             traduccion += "Si ninguna se cumple entonces: \n";
             for(Instruccion ins: listaInsElse){
-                traduccion += ins.traducir();
+                traduccion += ins.traducirPython();
             }
         }
         return traduccion;
+    }
+
+    @Override
+    public String traducirGo() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -8,30 +8,46 @@ package analizadores;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int LLAVDER = 8;
-  public static final int MENOS = 10;
-  public static final int AND = 15;
-  public static final int IGUAL = 18;
-  public static final int DECIMAL = 17;
-  public static final int DIVIDIDO = 12;
-  public static final int REVALUAR = 20;
-  public static final int PARIZQ = 3;
-  public static final int PARDER = 4;
-  public static final int UMENOS = 19;
-  public static final int POR = 11;
-  public static final int EOF = 0;
-  public static final int RELSE = 22;
-  public static final int RIF = 21;
-  public static final int error = 1;
-  public static final int MENQUE = 13;
-  public static final int CORIZQ = 5;
-  public static final int RMIENTRAS = 23;
-  public static final int ENTERO = 16;
-  public static final int CORDER = 6;
-  public static final int MAYQUE = 14;
-  public static final int MAS = 9;
+  public static final int RINICIO = 26;
+  public static final int POR = 13;
+  public static final int RFALSO = 32;
+  public static final int RMENORIGUAL = 20;
+  public static final int ENTERO = 28;
+  public static final int RDIFERENTE = 22;
   public static final int LLAVIZQ = 7;
+  public static final int RMOD = 16;
+  public static final int RELSE = 38;
+  public static final int RMAYORIGUAL = 19;
+  public static final int RMIENTRAS = 39;
+  public static final int IGUAL = 34;
+  public static final int CARACTER = 29;
+  public static final int CORDER = 6;
+  public static final int DIVIDIDO = 14;
+  public static final int UMENOS = 35;
+  public static final int REVALUAR = 36;
+  public static final int EOF = 0;
+  public static final int PARIZQ = 3;
+  public static final int DECIMAL = 33;
+  public static final int error = 1;
+  public static final int CADENA = 30;
+  public static final int MENOS = 12;
+  public static final int COMSIMPLE = 10;
+  public static final int RPOTENCIA = 15;
+  public static final int RIGUAL = 21;
+  public static final int LLAVDER = 8;
   public static final int PTCOMA = 2;
+  public static final int ROR = 23;
+  public static final int RVERDADERO = 31;
+  public static final int RMENOR = 18;
+  public static final int PARDER = 4;
+  public static final int RFIN = 27;
+  public static final int CORIZQ = 5;
+  public static final int RIF = 37;
+  public static final int DOLAR = 9;
+  public static final int RNOT = 25;
+  public static final int RAND = 24;
+  public static final int RMAYOR = 17;
+  public static final int MAS = 11;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -42,14 +58,30 @@ public class sym {
   "CORDER",
   "LLAVIZQ",
   "LLAVDER",
+  "DOLAR",
+  "COMSIMPLE",
   "MAS",
   "MENOS",
   "POR",
   "DIVIDIDO",
-  "MENQUE",
-  "MAYQUE",
-  "AND",
+  "RPOTENCIA",
+  "RMOD",
+  "RMAYOR",
+  "RMENOR",
+  "RMAYORIGUAL",
+  "RMENORIGUAL",
+  "RIGUAL",
+  "RDIFERENTE",
+  "ROR",
+  "RAND",
+  "RNOT",
+  "RINICIO",
+  "RFIN",
   "ENTERO",
+  "CARACTER",
+  "CADENA",
+  "RVERDADERO",
+  "RFALSO",
   "DECIMAL",
   "IGUAL",
   "UMENOS",
