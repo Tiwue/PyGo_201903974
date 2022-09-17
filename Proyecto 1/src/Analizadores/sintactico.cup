@@ -8,6 +8,7 @@ import Estructuras.Instrucciones.If;
 import Estructuras.Instrucciones.While;
 import Estructuras.Instrucciones.Instruccion;
 import Estructuras.Instrucciones.Evaluar;
+import Estructuras.Instrucciones.Declaracion;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -45,8 +46,9 @@ parser code
     }
 :} 
 
-terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE;
+terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA;
 terminal String MAS,MENOS,POR,DIVIDIDO,RPOTENCIA,RMOD,RMAYOR,RMENOR,RMAYORIGUAL,RMENORIGUAL, RIGUAL, RDIFERENTE, ROR, RAND, RNOT, RINICIO, RFIN;
+terminal String RINGRESAR, RCOMO, RCONVALOR, NOMVARIABLE, NUMDATO, FLOATDATO, CADDATO, BOOLDATO, CARDATO;
 terminal String ENTERO, CARACTER, CADENA;
 terminal String RVERDADERO,RFALSO;
 
@@ -61,7 +63,7 @@ non terminal Produccion instruccion;
 non terminal Produccion expresion;
 non terminal Produccion expresion_relacional;
 non terminal Produccion else_ifs;
-
+non terminal String listaVariables;
 precedence left ROR;
 precedence left RAND;
 precedence right RNOT;
@@ -106,6 +108,7 @@ instruccion ::=
                                                     RESULT.addSon("]");
                                                     RESULT.addSon(";");
                                                 :}
+ 
  | RMIENTRAS    PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER    {:
                                                                                         RESULT=new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(), b.getInstructions()));
                                                                                         RESULT.addSon("MIENTRAS");
@@ -141,6 +144,61 @@ instruccion ::=
                                                                                                                                 RESULT.addSon(c);
                                                                                                                                 RESULT.addSon("}");
                                                                                                                             :}
+| RINGRESAR listaVariables:a RCOMO NUMDATO RCONVALOR expresion:b PTCOMA                            {:
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.NUMERO, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon("INGRESAR");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("como"); 
+                                                                                                    RESULT.addSon("numero");
+                                                                                                    RESULT.addSon("con_valor");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+| RINGRESAR listaVariables:a RCOMO FLOATDATO RCONVALOR expresion:b PTCOMA                       {:
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.NUMERO, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon("INGRESAR");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("como"); 
+                                                                                                    RESULT.addSon("float");
+                                                                                                    RESULT.addSon("con_valor");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+| RINGRESAR listaVariables:a RCOMO CADDATO RCONVALOR expresion:b PTCOMA                             {:
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.CADENA, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon("INGRESAR");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("como"); 
+                                                                                                    RESULT.addSon("cadena");
+                                                                                                    RESULT.addSon("con_valor");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+| RINGRESAR listaVariables:a RCOMO BOOLDATO RCONVALOR expresion_relacional:b PTCOMA             {:
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.BOOLEAN, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon("INGRESAR");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("como"); 
+                                                                                                    RESULT.addSon("boolean");
+                                                                                                    RESULT.addSon("con_valor");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+| RINGRESAR listaVariables:a RCOMO CARDATO RCONVALOR expresion:b PTCOMA                         {:
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.CARACTER, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon("INGRESAR");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("como"); 
+                                                                                                    RESULT.addSon("caracter");
+                                                                                                    RESULT.addSon("con_valor");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+ 
+;
+
+listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                                        {:RESULT= a +"," + b;:}
+    |NOMVARIABLE:a                                                                            {:RESULT = a;:}
 ;
 
 else_ifs ::= 
@@ -235,12 +293,6 @@ expresion  ::=
                                                     RESULT=new Produccion(new Nodo("Expresion"), new Operacion(a,Operacion.Tipo_operacion.CARACTER));
                                                     RESULT.addSon(a+b+c+d+e+f);
                                                 :}
-|  RVERDADERO:a                                   {:
-                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
-                                                :}
-|  RFALSO:a                                   {:
-                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
-                                                :}
 ;
 
 expresion_relacional  ::= 
@@ -299,4 +351,11 @@ expresion_relacional  ::=
                                                     RESULT.addSon("not");
                                                     RESULT.addSon(b);
                                                 :}
+|  RVERDADERO:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
+                                                :}
+|  RFALSO:a                                   {:
+                                                    RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.BOOLEAN));
+                                                :}
+
 ;

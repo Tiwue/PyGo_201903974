@@ -122,7 +122,12 @@ public class Operacion implements Instruccion{
         }else if(tipo==Tipo_operacion.PARENTESIS){
             return "("+operadorIzq.traducirPython() + ")";
         }else if(tipo==Tipo_operacion.BOOLEAN){
-            return this.valor.toString();
+            if("verdadero".equals(this.valor.toString().toLowerCase())){
+             return "True";
+            }else{
+             return "False";
+            }
+            
         }
         
         /* ======== OPERACIONES RELACIONALES ======== */

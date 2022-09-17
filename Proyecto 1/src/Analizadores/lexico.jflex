@@ -24,7 +24,7 @@ CARACTER = [\'][ -}][\']
 CADENA = [\"]([^\"]|(\\\"))*[\"]
 COMENTARIO = ("//".*)|("//".*\n)
 COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
-
+NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 
 
 %{
@@ -56,8 +56,18 @@ COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 "not"               {return new Symbol(sym.RNOT,yyline,yychar,yytext());}
 "inicio"            {return new Symbol(sym.RINICIO,yyline,yychar,yytext());}
 "fin"               {return new Symbol(sym.RFIN,yyline,yychar,yytext());}
+"ingresar"          {return new Symbol(sym.RINGRESAR,yyline,yychar,yytext());}
+"como"              {return new Symbol(sym.RCOMO,yyline,yychar,yytext());}
+"con_valor"         {return new Symbol(sym.RCONVALOR,yyline,yychar,yytext()); }
+"Numero"            {return new Symbol(sym.NUMDATO,yyline,yychar,yytext());} 
+"Float"             {return new Symbol(sym.FLOATDATO,yyline,yychar,yytext());} 
+"Cadena"            {return new Symbol(sym.CADDATO,yyline,yychar,yytext());} 
+"Boolean"           {return new Symbol(sym.BOOLDATO,yyline,yychar,yytext());} 
+"Caracter"          {return new Symbol(sym.CARDATO,yyline,yychar,yytext());} 
 
-";"                 {return new Symbol(sym.PTCOMA,yyline,yychar, yytext());} 
+
+";"                 {return new Symbol(sym.PTCOMA,yyline,yychar, yytext());}
+","                 {return new Symbol(sym.COMA,yyline,yychar, yytext());}    
 "("                 {return new Symbol(sym.PARIZQ,yyline,yychar, yytext());} 
 ")"                 {return new Symbol(sym.PARDER,yyline,yychar, yytext());} 
 "["                 {return new Symbol(sym.CORIZQ,yyline,yychar, yytext());} 
@@ -78,6 +88,7 @@ COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 \n {yychar=1;}
 
 {BLANCOS}           {} 
+{NOMBREVARIABLE}    {return new Symbol(sym.NOMVARIABLE,yyline,yychar, yytext());}
 {D}                 {return new Symbol(sym.ENTERO,yyline,yychar, yytext());} 
 {DD}                {return new Symbol(sym.DECIMAL,yyline,yychar, yytext());} 
 {CARACTER}          {return new Symbol(sym.CARACTER,yyline,,yychar,yytext());}
