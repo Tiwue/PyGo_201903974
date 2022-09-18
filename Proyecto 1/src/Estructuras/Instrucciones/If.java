@@ -10,7 +10,18 @@ import java.util.LinkedList;
  * @author steve
  */
 public class If implements Instruccion{
+    
+    public static enum Tipo_if{
+    IF,
+    ELIF
+    }
     private final Operacion condicion;
+    private Tipo_if tipo;
+
+    public void setTipo(Tipo_if tipo) {
+        this.tipo = tipo;
+    }
+    
     /**
      * Lista de instrucciones que serán ejecutadas si la condición se cumple.
      */
@@ -30,10 +41,12 @@ public class If implements Instruccion{
      * tiene clausula ELSE.
      * @param a Condición del si..entonces
      * @param b Lista de instrucciones que deberían ejecutarse si la condición se cumple
+     * @param tipo
      */
-    public If(Operacion a, LinkedList<Instruccion> b) {
+    public If(Operacion a, LinkedList<Instruccion> b, Tipo_if tipo) {
         condicion=a;
         listaInstrucciones=b;
+        this.tipo = tipo;
     }
     /**
      * Segundo constructor de la clase, este se utiliza cuando la instrucción tiene
@@ -41,11 +54,13 @@ public class If implements Instruccion{
      * @param a Condición del si..entonces
      * @param b Lista de instrucciones que deberían ejecutarse si la condición se cumple
      * @param c Lista de instrucciones que deberían ejecutarse si la condición no se cumple
+     * @param tipo
      */
-    public If(Operacion a, LinkedList<Instruccion> b, LinkedList<Instruccion> c) {
+    public If(Operacion a, LinkedList<Instruccion> b, LinkedList<Instruccion> c,Tipo_if tipo) {
         condicion=a;
         listaInstrucciones=b;
         listaInsElse=c;
+        this.tipo = tipo;
     }
     /**
      * Tercer constructor de la clase, este se utiliza cuando la instrucción tiene
@@ -54,18 +69,19 @@ public class If implements Instruccion{
      * @param b Lista de instrucciones que deberían ejecutarse si la condición se cumple
      * @param l Lista de instrucciones que deberían ejecutarse si la condición ElSE IF se cumple
      * @param c Lista de instrucciones que deberían ejecutarse si la condición no se cumple
+     * @param tipo
      */
-    public If(Operacion a, LinkedList<Instruccion> b, LinkedList<Instruccion> l, LinkedList<Instruccion> c) {
+    public If(Operacion a, LinkedList<Instruccion> b, LinkedList<Instruccion> l, LinkedList<Instruccion> c,Tipo_if tipo) {
         condicion=a;
         listaInstrucciones=b;
         listaElseIfInstrucciones = l;
         listaInsElse=c;
+        this.tipo = tipo;
     }
     /**
      * Método que ejecuta la instrucción si..entonces, es una sobreescritura del 
      * método ejecutar que se debe programar por la implementación de la interfaz
      * instrucción
-     * @param ts tabla de símbolos del ámbito padre de la sentencia.
      * @return Estra instrucción retorna nulo porque no produce ningún valor en 
      * su ejecución
      */
@@ -73,13 +89,21 @@ public class If implements Instruccion{
 
     @Override
     public String traducirPython() {
-        String traduccion = "if "+this.condicion.traducirPython()+":\n";
+        String traduccion="";
+        
+        
+        if(this.tipo == Tipo_if.IF){
+             traduccion = "if "+this.condicion.traducirPython()+":\n";
+        }else if(this.tipo == Tipo_if.ELIF){
+             traduccion = "elif "+this.condicion.traducirPython()+":\n";
+        }
+        
         if(listaInstrucciones != null)
             for(Instruccion ins: listaInstrucciones){
                 traduccion += ins.traducirPython();
             }
         if(listaElseIfInstrucciones != null){
-            traduccion += "elif:\n";
+            
             for(Instruccion ins: listaElseIfInstrucciones){
                 traduccion += ins.traducirPython();
             }

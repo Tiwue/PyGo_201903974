@@ -34,7 +34,8 @@ public class Operacion implements Instruccion{
         OR,
         AND,
         NOT,
-        CONCATENACION
+        CONCATENACION,
+        VARIABLE
     }
     /**
      * Tipo de operación a ejecutar.
@@ -66,6 +67,16 @@ public class Operacion implements Instruccion{
         this.operadorIzq = operadorIzq;
         this.operadorDer = operadorDer;
     }
+
+    public Tipo_operacion getTipo() {
+        return tipo;
+    }
+
+    public String getValor() {
+        return valor.toString();
+    }
+    
+    
     /**
      * Constructor para operaciones unarias (un operador), estas operaciones son:
      * NEGATIVO
@@ -93,19 +104,19 @@ public class Operacion implements Instruccion{
     public String traducirPython() {
         /* ======== OPERACIONES ARITMETICAS ======== */
         if(tipo== Tipo_operacion.DIVISION){
-            return operadorIzq.traducirPython()+ "/" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " / " + operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.MULTIPLICACION){
-            return operadorIzq.traducirPython()+ "*" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " * " + operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.RESTA){
-            return operadorIzq.traducirPython()+ "-" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " - " + operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.SUMA){
-            return operadorIzq.traducirPython()+ "+" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " + " + operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.NEGATIVO){
             return "-" + operadorIzq.traducirPython();
         }else if(tipo==Tipo_operacion.POTENCIA){
-            return operadorIzq.traducirPython()+ "**" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " ** " + operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.MODULO){
-            return operadorIzq.traducirPython() + "%" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython() + " % " + operadorDer.traducirPython();
         }
         
 
@@ -143,26 +154,29 @@ public class Operacion implements Instruccion{
         
         /* ======== OPERACIONES RELACIONALES ======== */
         else if(tipo== Tipo_operacion.MAYOR_QUE){
-            return operadorIzq.traducirPython()+ ">" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " > " + operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.MENOR_QUE){
-            return operadorIzq.traducirPython()+ "<" +operadorDer.traducirPython();
+            return operadorIzq.traducirPython()+ " < " +operadorDer.traducirPython();
         }else if(tipo== Tipo_operacion.CONCATENACION){
-            return operadorIzq.traducirPython() +"+"+operadorDer.traducirPython();
+            return operadorIzq.traducirPython() +" + "+operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.MAYOR_IGUAL_QUE){
-            return operadorIzq.traducirPython() + ">=" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython() + " >= " + operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.MENOR_IGUAL_QUE){
-            return operadorIzq.traducirPython() + "<=" + operadorDer.traducirPython();
+            return operadorIzq.traducirPython() + " <= " + operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.IGUAL){
-            return operadorIzq.traducirPython() +"=="+operadorDer.traducirPython();
+            return operadorIzq.traducirPython() +" == "+operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.DIFERENTE){
-            return operadorIzq.traducirPython() +"!="+operadorDer.traducirPython();
+            return operadorIzq.traducirPython() +" != "+operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.AND){
-            return operadorIzq.traducirPython() +"and"+operadorDer.traducirPython();
+            return operadorIzq.traducirPython() +" and "+operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.OR){
-            return operadorIzq.traducirPython() +"or"+operadorDer.traducirPython();
+            return operadorIzq.traducirPython() +" or "+operadorDer.traducirPython();
         }else if(tipo==Tipo_operacion.NOT){
             return "not "+ operadorIzq.traducirPython();
-        }else{
+        }else if(tipo==Tipo_operacion.VARIABLE){
+            return this.valor.toString();
+        }
+        else{
             return "";
         }
     }
