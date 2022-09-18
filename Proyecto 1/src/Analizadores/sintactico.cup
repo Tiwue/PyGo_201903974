@@ -9,6 +9,7 @@ import Estructuras.Instrucciones.While;
 import Estructuras.Instrucciones.Instruccion;
 import Estructuras.Instrucciones.Evaluar;
 import Estructuras.Instrucciones.Declaracion;
+import Estructuras.Instrucciones.Asignacion;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -46,16 +47,16 @@ parser code
     }
 :} 
 
-terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA;
+terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA, DOSPTS;
 terminal String MAS,MENOS,POR,DIVIDIDO,RPOTENCIA,RMOD,RMAYOR,RMENOR,RMAYORIGUAL,RMENORIGUAL, RIGUAL, RDIFERENTE, ROR, RAND, RNOT, RINICIO, RFIN;
-terminal String RINGRESAR, RCOMO, RCONVALOR, NOMVARIABLE, NUMDATO, FLOATDATO, CADDATO, BOOLDATO, CARDATO;
-terminal String ENTERO, CARACTER, CADENA;
+terminal String RINGRESAR, RCOMO, RCONVALOR, NOMVARIABLE, NUMDATO, FLOATDATO, CADDATO, BOOLDATO, CARDATO, FLECHAASIGN;
+terminal String ENTERO, CHAR, STRING;
 terminal String RVERDADERO,RFALSO;
 
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,RELSE,RMIENTRAS;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -119,31 +120,34 @@ instruccion ::=
                                                                                         RESULT.addSon(b);
                                                                                         RESULT.addSon("}");
                                                                                     :}
- | RIF PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER                                                     {:
-                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(), a.getInstructions()));
-                                                                                                                                RESULT.addSon("IF");
-                                                                                                                                RESULT.addSon("(");
+ | RSI expresion_relacional:a  RENTONCES instrucciones:b RFIN_SI                                                     {:
+                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                                                RESULT.addSon("SI");
                                                                                                                                 RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(")");
-                                                                                                                                RESULT.addSon("{");
+                                                                                                                                RESULT.addSon("entonces");
                                                                                                                                 RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("}");
-                                                                                                                            :} 
- | RIF PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER else_ifs:l RELSE LLAVIZQ instrucciones:c LLAVDER    {:  
-                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),l.getInstructions(),c.getInstructions()));
-                                                                                                                                RESULT.addSon("IF");
-                                                                                                                                RESULT.addSon("(");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(")");
-                                                                                                                                RESULT.addSon("{");
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("}");
-                                                                                                                                RESULT.addSon(l);
-                                                                                                                                RESULT.addSon("ELSE");
-                                                                                                                                RESULT.addSon("{");
-                                                                                                                                RESULT.addSon(c);
-                                                                                                                                RESULT.addSon("}");
+                                                                                                                                RESULT.addSon("fin_si");
                                                                                                                             :}
+| RSI expresion_relacional:a  instrucciones:b RELSE instrucciones:c RFIN_SI    {:  
+                                                                                                                             RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),c.getInstructions()));
+                                                                                                                                RESULT.addSon("si");
+                                                                                                                                RESULT.addSon(a);
+                                                                                                                                RESULT.addSon(b);
+                                                                                                                                RESULT.addSon("de_lo_contrario");
+                                                                                                                                RESULT.addSon(c);
+                                                                                                                                RESULT.addSon("fin_si");   
+                                                                                                                            :} 
+ | RSI expresion_relacional:a instrucciones:b else_ifs:l RELSE instrucciones:c RFIN_SI    {:  
+                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),l.getInstructions(),c.getInstructions()));
+                                                                                                                                RESULT.addSon("si");
+                                                                                                                                RESULT.addSon(a);
+                                                                                                                                RESULT.addSon(b);
+                                                                                                                                RESULT.addSon(l);
+                                                                                                                                RESULT.addSon("de_lo_contrario");
+                                                                                                                                RESULT.addSon(c);
+                                                                                                                                RESULT.addSon("fin_si");
+                                                                                                                            :}
+
 | RINGRESAR listaVariables:a RCOMO NUMDATO RCONVALOR expresion:b PTCOMA                            {:
                                                                                                     RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.NUMERO, (Operacion)b.getIns()));
                                                                                                     RESULT.addSon("INGRESAR");
@@ -194,7 +198,20 @@ instruccion ::=
                                                                                                     RESULT.addSon(b);
                                                                                                     RESULT.addSon(";");
                                                                                                 :}
- 
+| listaVariables:a FLECHAASIGN expresion:b PTCOMA                         {:
+                                                                                                    RESULT=new Produccion(new Nodo("Asignacion"), new Asignacion(a, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
+| listaVariables:a FLECHAASIGN expresion_relacional:b PTCOMA                         {:
+                                                                                                    RESULT=new Produccion(new Nodo("Asignacion"), new Asignacion(a, (Operacion)b.getIns()));
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(";");
+                                                                                                :}
 ;
 
 listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                                        {:RESULT= a +"," + b;:}
@@ -202,31 +219,27 @@ listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                          
 ;
 
 else_ifs ::= 
-    else_ifs:l RELSE RIF PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER                                {:                                                                                                                                
-                                                                                                                                RESULT=new Produccion(new Nodo("ELSE_IFS"), l.getInstructions());
-                                                                                                                                RESULT.addIns(new If((Operacion)a.getIns(), b.getInstructions()));
-                                                                                                                                RESULT.addSon(l);
-                                                                                                                                RESULT.addSon("ELSE");
-                                                                                                                                RESULT.addSon("IF");
-                                                                                                                                RESULT.addSon("(");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(")");
-                                                                                                                                RESULT.addSon("{");
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("}");
-                                                                                                                            :}
-  | RELSE RIF PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER                                              {:  
-                                                                                                                                RESULT=new Produccion(new Nodo("ELSE_IFS"), new LinkedList<>());
-                                                                                                                                RESULT.addIns(new If((Operacion)a.getIns(), b.getInstructions()));
-                                                                                                                                RESULT.addSon("ELSE");
-                                                                                                                                RESULT.addSon("IF");
-                                                                                                                                RESULT.addSon("(");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(")");
-                                                                                                                                RESULT.addSon("{");
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("}");
-                                                                                                                            :}
+    else_ifs:l ROSI  expresion_relacional:a RENTONCES instrucciones:b                                 {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("O_SI's"), l.getInstructions());
+                                                                                                        RESULT.addIns(new If((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon("ELSE");
+                                                                                                        RESULT.addSon("IF");
+                                                                                                        RESULT.addSon("(");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(")");
+                                                                                                        RESULT.addSon("{");
+                                                                                                        RESULT.addSon(b);
+                                                                                                        RESULT.addSon("}");
+                                                                                                       :}
+  | ROSI expresion_relacional:a RENTONCES instrucciones:b                                              {:  
+                                                                                                        RESULT=new Produccion(new Nodo("O_SI"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new If((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                        RESULT.addSon("O_SI");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon("entonces");
+                                                                                                        RESULT.addSon(b);
+                                                                                                        :}
 ;
 
 expresion  ::= 
@@ -283,14 +296,14 @@ expresion  ::=
  |  DECIMAL:a                                   {:
                                                     RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.NUMERO));          
                                                 :}
- |  CADENA:a                                   {:
+ |  STRING:a                                   {:
                                                     RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.CADENA));
                                                 :}
-|  CARACTER:a                                   {:
+|  CHAR:a                                   {:
                                                     RESULT=new Produccion(new Nodo(null, a), new Operacion(a,Operacion.Tipo_operacion.CARACTER));
                                                 :}
 |   COMSIMPLE:a DOLAR:b LLAVIZQ:c ENTERO:d LLAVDER:e COMSIMPLE:f                                 {:
-                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion(a,Operacion.Tipo_operacion.CARACTER));
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion(d,Operacion.Tipo_operacion.CARACTER));
                                                     RESULT.addSon(a+b+c+d+e+f);
                                                 :}
 ;

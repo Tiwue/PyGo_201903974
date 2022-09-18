@@ -20,8 +20,8 @@ import Estructuras.*;
 BLANCOS=[ \r\t]+
 D=[0-9]+
 DD=[0-9]+("."[  |0-9]+)?
-CARACTER = [\'][ -}][\']
-CADENA = [\"]([^\"]|(\\\"))*[\"]
+CARACTER = [\'][a-zA-Z][\']
+CADENA = [\"]([^\"\n]|(\\\"))*[\"]
 COMENTARIO = ("//".*)|("//".*\n)
 COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
@@ -37,9 +37,12 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 
 %%
 
+
+
+
 "Evaluar"           {return new Symbol(sym.REVALUAR,yyline,yychar, yytext());} 
 "if"                {return new Symbol(sym.RIF,yyline,yychar, yytext());} 
-"else"              {return new Symbol(sym.RELSE,yyline,yychar, yytext());}
+"else"              {return new Symbol(sym.ELSE,yyline,yychar, yytext());}
 "mientras"          {return new Symbol(sym.RMIENTRAS,yyline,yychar, yytext());}
 "verdadero"         {return new Symbol(sym.RVERDADERO,yyline,yychar, yytext());}
 "falso"             {return new Symbol(sym.RFALSO,yyline,yychar,yytext());}
@@ -64,7 +67,12 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "Cadena"            {return new Symbol(sym.CADDATO,yyline,yychar,yytext());} 
 "Boolean"           {return new Symbol(sym.BOOLDATO,yyline,yychar,yytext());} 
 "Caracter"          {return new Symbol(sym.CARDATO,yyline,yychar,yytext());} 
-
+"->"                {return new Symbol(sym.FLECHAASIGN,yyline,yychar,yytext());}
+"si"                {return new Symbol(sym.RSI,yyline,yychar,yytext());}
+"entonces"          {return new Symbol(sym.RENTONCES,yyline,yychar,yytext());}
+"fin_si"            {return new Symbol(sym.RFIN_SI,yyline,yychar,yytext());}
+"de_lo_contrario"   {return new Symbol(sym.RELSE,yyline,yychar,yytext());}
+"o_si"              {return new Symbol(sym.ROSI,yyline,yychar,yytext());}
 
 ";"                 {return new Symbol(sym.PTCOMA,yyline,yychar, yytext());}
 ","                 {return new Symbol(sym.COMA,yyline,yychar, yytext());}    
@@ -81,9 +89,8 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "/"                 {return new Symbol(sym.DIVIDIDO,yyline,yychar, yytext());} 
 "'"                 {return new Symbol(sym.COMSIMPLE,yyline,yychar, yytext());}
 
-"<"                 {return new Symbol(sym.MENQUE,yyline,yychar, yytext());} 
-">"                 {return new Symbol(sym.MAYQUE,yyline,yychar, yytext());} 
-"="                 {return new Symbol(sym.IGUAL,yyline,yychar, yytext());} 
+"="                 {return new Symbol(sym.IGUAL,yyline,yychar, yytext());}
+":"                 {return new Symbol(sym.DOSPTS,yyline,yychar, yytext());}
 
 \n {yychar=1;}
 
@@ -91,10 +98,10 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 {NOMBREVARIABLE}    {return new Symbol(sym.NOMVARIABLE,yyline,yychar, yytext());}
 {D}                 {return new Symbol(sym.ENTERO,yyline,yychar, yytext());} 
 {DD}                {return new Symbol(sym.DECIMAL,yyline,yychar, yytext());} 
-{CARACTER}          {return new Symbol(sym.CARACTER,yyline,,yychar,yytext());}
-{CADENA}            {return new Symbol(sym.CADENA,yyline,,yychar,yytext());}
 {COMENTARIO}        {}
 {COMENTARIOMULTI}   {}
+{CARACTER}          {return new Symbol(sym.CHAR,yyline,yychar,(yytext()).substring(1,yytext().length()-1));}
+{CADENA}            {return new Symbol(sym.STRING, yyline, yychar, (yytext()).substring(1,yytext().length()-1));}
 
 . {
     System.out.println("Este es un error lexico: "+yytext()+

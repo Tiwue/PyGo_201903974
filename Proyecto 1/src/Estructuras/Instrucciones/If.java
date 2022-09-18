@@ -73,19 +73,19 @@ public class If implements Instruccion{
 
     @Override
     public String traducirPython() {
-        String traduccion = "Este es un IF para la OP "+this.condicion.traducirPython()+":\n";
+        String traduccion = "if "+this.condicion.traducirPython()+":\n";
         if(listaInstrucciones != null)
             for(Instruccion ins: listaInstrucciones){
                 traduccion += ins.traducirPython();
             }
         if(listaElseIfInstrucciones != null){
-            traduccion += "Si no se cumple entonces ";
+            traduccion += "elif:\n";
             for(Instruccion ins: listaElseIfInstrucciones){
                 traduccion += ins.traducirPython();
             }
         }
         if(listaInsElse != null){
-            traduccion += "Si ninguna se cumple entonces: \n";
+            traduccion += "else: \n";
             for(Instruccion ins: listaInsElse){
                 traduccion += ins.traducirPython();
             }

@@ -116,9 +116,20 @@ public class Operacion implements Instruccion{
         }else if(tipo == Tipo_operacion.IDENTIFICADOR){
             return valor.toString();
         }else if(tipo == Tipo_operacion.CADENA){
-            return valor.toString();
+            return "\""+valor.toString()+"\"";
         }else if(tipo == Tipo_operacion.CARACTER){
-            return this.valor.toString();
+            char c='0'; 
+            if(this.valor.toString().length()>1){
+                int valorAscii = Integer.parseInt(this.valor.toString());
+                if((valorAscii>=65 && valorAscii<=90)||(valorAscii>=97 && valorAscii<=122)){
+                 c= (char)valorAscii;
+                }        
+              
+            }else{
+              c=this.valor.toString().charAt(0);
+            }
+            
+            return "'"+c+"'";
         }else if(tipo==Tipo_operacion.PARENTESIS){
             return "("+operadorIzq.traducirPython() + ")";
         }else if(tipo==Tipo_operacion.BOOLEAN){

@@ -4,39 +4,20 @@
  */
 package Estructuras.Instrucciones;
 
-import java.util.LinkedList;
-
 /**
  *
  * @author steve
  */
-public class Declaracion implements Instruccion {
-    
-    public static enum Tipo_dato{
-        NUMERO,
-        CADENA,
-        BOOLEAN,
-        CARACTER
-    }
-    
-    private Tipo_dato tipo;
+public class Asignacion implements Instruccion {
     
     private final String listaNombresVariables;
     private Operacion valores;
     
-   public Declaracion( String nombres, Tipo_dato tipo, Operacion valor){
-     this.tipo = tipo;
-     this.listaNombresVariables = nombres;
-     this.valores = valor;
-   }
-   
-   public Declaracion( String nombres, Tipo_dato tipo){
-     this.tipo = tipo;
-     this.listaNombresVariables = nombres;
-   }
-   
-   
-   
+    public Asignacion(String nombres, Operacion valores){
+       this.listaNombresVariables = nombres;
+       this.valores = valores;
+    }
+
     @Override
     public String traducirPython() {
        String cadena = "";
@@ -61,7 +42,6 @@ public class Declaracion implements Instruccion {
 
     @Override
     public String traducirGo() {
-        return "";
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
 }
