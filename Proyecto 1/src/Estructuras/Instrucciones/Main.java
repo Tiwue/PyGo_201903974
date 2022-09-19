@@ -27,7 +27,7 @@ public class Main implements Instruccion {
                 cadena += ins.traducirPython(tabulaciones+1);
             }
         cadena +="\nif __name__ =='__main__':\n\tmain()";
-        return cadena;
+        return cadena+"\n";
     }
 
     @Override

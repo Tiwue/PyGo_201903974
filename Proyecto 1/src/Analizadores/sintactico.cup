@@ -13,6 +13,7 @@ import Estructuras.Instrucciones.Asignacion;
 import Estructuras.Instrucciones.Switch;
 import Estructuras.Instrucciones.Case;
 import Estructuras.Instrucciones.Main;
+import Estructuras.Instrucciones.For;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -59,7 +60,7 @@ terminal String RVERDADERO,RFALSO;
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -261,6 +262,61 @@ instruccion ::=
                                                                                                     RESULT.addSon("else");
                                                                                                     RESULT.addSon(c);
                                                                                                     RESULT.addSon("fin_segun");
+                                                                                                :}
+
+//FORS
+
+| RPARA expresion_relacional:a FLECHAASIGN expresion_relacional:b RHASTA expresion_relacional:c RHACER instrucciones:d RFIN_PARA  {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new For((Operacion)a.getIns(),(Operacion)b.getIns(), (Operacion)c.getIns(), d.getInstructions()));
+                                                                                                    RESULT.addSon("para");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("hasta");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_para");
+                                                                                                :}
+
+| RPARA expresion_relacional:a FLECHAASIGN expresion_relacional:b RHASTA expresion_relacional:c RHACER RFIN_PARA {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new For((Operacion)a.getIns(),(Operacion)b.getIns(), (Operacion)c.getIns(), new LinkedList<>() ));
+                                                                                                    RESULT.addSon("para");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("hasta");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon("fin_para");
+                                                                                                :}
+
+|RPARA expresion_relacional:a FLECHAASIGN expresion_relacional:b RHASTA expresion_relacional:c RCON RINCREMENTAL expresion_relacional:d RHACER instrucciones:e RFIN_PARA {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new For((Operacion)a.getIns(),(Operacion)b.getIns(), (Operacion)c.getIns(), e.getInstructions(), (Operacion)d.getIns()));
+                                                                                                    RESULT.addSon("para");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("hasta");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("con incremental");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(e);
+                                                                                                    RESULT.addSon("fin_para");
+                                                                                                :}
+|RPARA expresion_relacional:a FLECHAASIGN expresion_relacional:b RHASTA expresion_relacional:c RCON RINCREMENTAL expresion_relacional:d RHACER RFIN_PARA  {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new For((Operacion)a.getIns(),(Operacion)b.getIns(), (Operacion)c.getIns(), new LinkedList<>(), (Operacion)d.getIns()));
+                                                                                                    RESULT.addSon("para");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("->");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("hasta");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("con incremental");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon("fin_para");
                                                                                                 :}
 ;
 

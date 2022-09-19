@@ -63,7 +63,7 @@ public class Switch implements Instruccion{
                 traduccion += ins.traducirPython(tabulaciones + 1);
             }
         }
-        return traduccion;      
+        return traduccion+"\n";      
     }
 
     @Override

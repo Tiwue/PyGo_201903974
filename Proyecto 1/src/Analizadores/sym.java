@@ -26,12 +26,14 @@ public class sym {
   public static final int RMOD = 20;
   public static final int RELSE = 57;
   public static final int RMAYORIGUAL = 23;
+  public static final int RCON = 65;
   public static final int RMIENTRAS = 53;
   public static final int IGUAL = 48;
   public static final int CORDER = 6;
   public static final int RCONVALOR = 34;
   public static final int DIVIDIDO = 18;
   public static final int CARDATO = 40;
+  public static final int RPARA = 62;
   public static final int UMENOS = 49;
   public static final int REVALUAR = 50;
   public static final int BOOLDATO = 39;
@@ -39,11 +41,13 @@ public class sym {
   public static final int EOF = 0;
   public static final int PARIZQ = 3;
   public static final int RFIN_SI = 56;
+  public static final int RINCREMENTAL = 66;
   public static final int error = 1;
   public static final int COMA = 11;
   public static final int FLECHAASIGN = 41;
   public static final int MENOS = 16;
   public static final int COMSIMPLE = 10;
+  public static final int RHASTA = 63;
   public static final int RPOTENCIA = 19;
   public static final int RFIN_SEGUN = 61;
   public static final int RIGUAL = 25;
@@ -54,6 +58,7 @@ public class sym {
   public static final int LLAVDER = 8;
   public static final int RINGRESAR = 32;
   public static final int ELSE = 52;
+  public static final int RFIN_PARA = 64;
   public static final int PTCOMA = 2;
   public static final int STRING = 44;
   public static final int ROR = 27;
@@ -132,7 +137,12 @@ public class sym {
   "ROSI",
   "RSEGUN",
   "RHACER",
-  "RFIN_SEGUN"
+  "RFIN_SEGUN",
+  "RPARA",
+  "RHASTA",
+  "RFIN_PARA",
+  "RCON",
+  "RINCREMENTAL"
   };
 }
 
