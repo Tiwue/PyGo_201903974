@@ -296,7 +296,7 @@ public class Principal extends javax.swing.JFrame {
             //será inválida y se cargará como null, por lo tanto no deberá ejecutarse
             //es por esto que se hace esta validación.
             if(ins!=null)
-                traduccion += ins.traducirPython();
+                traduccion += ins.traducirPython(0);
         }
         
         return traduccion;

@@ -10,6 +10,9 @@ import Estructuras.Instrucciones.Instruccion;
 import Estructuras.Instrucciones.Evaluar;
 import Estructuras.Instrucciones.Declaracion;
 import Estructuras.Instrucciones.Asignacion;
+import Estructuras.Instrucciones.Switch;
+import Estructuras.Instrucciones.Case;
+import Estructuras.Instrucciones.Main;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -47,7 +50,7 @@ parser code
     }
 :} 
 
-terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA, DOSPTS;
+terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA, DOSPTS,INTERROGIZQ, INTERROGDER;
 terminal String MAS,MENOS,POR,DIVIDIDO,RPOTENCIA,RMOD,RMAYOR,RMENOR,RMAYORIGUAL,RMENORIGUAL, RIGUAL, RDIFERENTE, ROR, RAND, RNOT, RINICIO, RFIN;
 terminal String RINGRESAR, RCOMO, RCONVALOR, NOMVARIABLE, NUMDATO, FLOATDATO, CADDATO, BOOLDATO, CARDATO, FLECHAASIGN;
 terminal String ENTERO, CHAR, STRING;
@@ -56,14 +59,17 @@ terminal String RVERDADERO,RFALSO;
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN;
 
 non terminal ini;
 non terminal Produccion instrucciones;
+non terminal Produccion globales;
+non terminal Produccion global;
 non terminal Produccion instruccion;
 non terminal Produccion expresion;
 non terminal Produccion expresion_relacional;
 non terminal Produccion else_ifs;
+non terminal Produccion cases;
 non terminal String listaVariables;
 non terminal Produccion expresion_valor;
 
@@ -81,12 +87,37 @@ precedence right UMENOS;
 
 start with ini; 
 
-ini::=RINICIO instrucciones:a RFIN                         {:
+ini::= globales:a                                {:
                                                     //se guarda el AST, que es la lista principal de instrucciones en la variable
                                                     //AST que se definió dentro del parser
                                                     parser.AST=a.getInstructions();
                                                     Nodo NODERAIZ = new Nodo("INIT"); NODERAIZ.addSon(a.getNode());
                                                     parser.arbol=new Arbol(NODERAIZ);
+                                                :}
+;
+
+globales::=
+   globales:a global:b                {:
+                                                    RESULT=new Produccion(new Nodo("Instrucciones Globales"), a.getInstructions());
+                                                    RESULT.addIns(b.getIns());
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon(b);
+                                                :}
+ | global:a                                {:
+                                                    RESULT=new Produccion(new Nodo("Instruccion"), new LinkedList<>());
+                                                    RESULT.addIns(a.getIns());
+                                                    RESULT.addSon(a);
+                                                :}        
+ | error global 
+
+; 
+
+global::=
+    RINICIO instrucciones:a RFIN                {:
+                                                    RESULT=new Produccion(new Nodo("Instruccion"), new Main(a.getInstructions()));
+                                                    RESULT.addSon("inicio");
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon("fin");
                                                 :}
 ;
 
@@ -211,12 +242,57 @@ instruccion ::=
                                                                                                     RESULT.addSon(b);
                                                                                                     RESULT.addSon(";");
                                                                                                 :}
+
+| RSEGUN expresion_relacional:a RHACER cases:b  RFIN_SEGUN                                       {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions()));
+                                                                                                    RESULT.addSon("segun");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("fin_segun");
+                                                                                                :}
+
+| RSEGUN expresion_relacional:a RHACER cases:b RELSE RENTONCES instrucciones:c RFIN_SEGUN                    {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions(),c.getInstructions()));
+                                                                                                    RESULT.addSon("segun");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("else");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_segun");
+                                                                                                :}
+;
+
+cases::=
+    cases:l INTERROGIZQ expresion_relacional:a INTERROGDER RENTONCES instrucciones:b            {:
+                                                                                                    RESULT=new Produccion(new Nodo("Casos"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Case((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon("¿");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon("?");
+                                                                                                        RESULT.addSon("entonces");
+                                                                                                        RESULT.addSon(b);
+                                                                                                :}
+
+|   INTERROGIZQ expresion_relacional:a INTERROGDER RENTONCES instrucciones:b                    {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Case"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Case((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                        RESULT.addSon("¿");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon("?");
+                                                                                                        RESULT.addSon("entonces");
+                                                                                                        RESULT.addSon(b);
+                                                                                                        :}
+
 ;
 
 listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                                        {:RESULT= a +"," + b;:}
     |NOMVARIABLE:a                                                                            {:RESULT = a;:}
 ;
-
+    
+//ELIFS
 else_ifs ::= 
     else_ifs:l ROSI  expresion_relacional:a RENTONCES instrucciones:b                                 {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("O_SI's"), l.getInstructions());
@@ -241,6 +317,9 @@ else_ifs ::=
                                                                                                         RESULT.addSon(b);
                                                                                                         :}
 ;
+
+
+//EXPRESIONES
 
 expresion_relacional  ::= 
  expresion_relacional:a  RMAYOR   expresion_relacional:b            {:

@@ -19,8 +19,13 @@ public class Asignacion implements Instruccion {
     }
 
     @Override
-    public String traducirPython() {
+    public String traducirPython(int tabulaciones) {
        String cadena = "";
+       String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "\t";
+            }
+        cadena += tabs;    
        String[] nombres = listaNombresVariables.split(",");
        for(int i=0;i<nombres.length;i++){
            if(i==nombres.length-1){
@@ -32,9 +37,9 @@ public class Asignacion implements Instruccion {
        cadena +=" = ";
        for (int i=0;i<nombres.length;i++ ){
            if(i==nombres.length-1){
-               cadena += valores.traducirPython();
+               cadena += valores.traducirPython(0);
            }else{
-               cadena += valores.traducirPython() + ", ";
+               cadena += valores.traducirPython(0) + ", ";
            }       
        }
        return cadena+"\n";

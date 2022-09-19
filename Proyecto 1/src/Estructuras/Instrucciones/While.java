@@ -37,10 +37,16 @@ public class While implements Instruccion{
    
 
     @Override
-    public String traducirPython() {
-        String traduccion = "Mientras esta condicion se cumpla "+condicion.traducirPython()+" tenemos que hacer:\n";
+    public String traducirPython(int tabulaciones) {
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "   ";
+            }
+        traduccion += tabs; 
+        traduccion += "Mientras esta condicion se cumpla "+condicion.traducirPython(0)+" tenemos que hacer:\n";
         for(Instruccion ins:listaInstrucciones){
-            traduccion +=ins.traducirPython();
+            traduccion +=ins.traducirPython(tabulaciones + 1);
         }
         return traduccion;
     }

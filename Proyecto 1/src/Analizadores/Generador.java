@@ -23,7 +23,3 @@ public class Generador {
         }
     }
 }
-/******************7 *dsafasdf
-
-adfadfasdf
-****//////////////////**/

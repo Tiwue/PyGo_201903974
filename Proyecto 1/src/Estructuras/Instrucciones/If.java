@@ -88,30 +88,33 @@ public class If implements Instruccion{
  
 
     @Override
-    public String traducirPython() {
+    public String traducirPython(int tabulaciones) {
         String traduccion="";
-        
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "\t";
+            }
         
         if(this.tipo == Tipo_if.IF){
-             traduccion = "if "+this.condicion.traducirPython()+":\n";
+             traduccion += tabs + "if "+this.condicion.traducirPython(0)+":\n";
         }else if(this.tipo == Tipo_if.ELIF){
-             traduccion = "elif "+this.condicion.traducirPython()+":\n";
+             traduccion += tabs + "elif "+this.condicion.traducirPython(0)+":\n";
         }
         
         if(listaInstrucciones != null)
             for(Instruccion ins: listaInstrucciones){
-                traduccion += ins.traducirPython();
+                traduccion += ins.traducirPython(tabulaciones + 1);
             }
         if(listaElseIfInstrucciones != null){
             
             for(Instruccion ins: listaElseIfInstrucciones){
-                traduccion += ins.traducirPython();
+                traduccion +=  ins.traducirPython(tabulaciones);
             }
         }
         if(listaInsElse != null){
-            traduccion += "else: \n";
+            traduccion += tabs + "else: \n";
             for(Instruccion ins: listaInsElse){
-                traduccion += ins.traducirPython();
+                traduccion += ins.traducirPython(tabulaciones + 1);
             }
         }
         return traduccion;

@@ -73,7 +73,12 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "fin_si"            {return new Symbol(sym.RFIN_SI,yyline,yychar,yytext());}
 "de_lo_contrario"   {return new Symbol(sym.RELSE,yyline,yychar,yytext());}
 "o_si"              {return new Symbol(sym.ROSI,yyline,yychar,yytext());}
+"segun"             {return new Symbol(sym.RSEGUN,yyline,yychar,yytext());}
+"hacer"             {return new Symbol(sym.RHACER,yyline,yychar,yytext());}
+"fin_segun"         {return new Symbol(sym.RFIN_SEGUN,yyline,yychar,yytext());}
 
+"¿"                 {return new Symbol(sym.INTERROGIZQ,yyline,yychar, yytext());}
+"?"                 {return new Symbol(sym.INTERROGDER,yyline,yychar, yytext());}
 ";"                 {return new Symbol(sym.PTCOMA,yyline,yychar, yytext());}
 ","                 {return new Symbol(sym.COMA,yyline,yychar, yytext());}    
 "("                 {return new Symbol(sym.PARIZQ,yyline,yychar, yytext());} 

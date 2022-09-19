@@ -12,6 +12,6 @@ import Estructuras.Nodo;
 
 public interface Instruccion {
 
-    public String traducirPython();
+    public String traducirPython(int tabulaciones);
     public String traducirGo();
 }
