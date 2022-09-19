@@ -23,6 +23,7 @@ public class sym {
   public static final int RHACER = 60;
   public static final int RDIFERENTE = 26;
   public static final int CADDATO = 38;
+  public static final int RREPETIR = 68;
   public static final int LLAVIZQ = 7;
   public static final int RMOD = 20;
   public static final int RELSE = 57;
@@ -59,6 +60,7 @@ public class sym {
   public static final int LLAVDER = 8;
   public static final int RINGRESAR = 32;
   public static final int ELSE = 52;
+  public static final int RHASTA_QUE = 69;
   public static final int RFIN_PARA = 64;
   public static final int PTCOMA = 2;
   public static final int STRING = 44;
@@ -144,7 +146,9 @@ public class sym {
   "RFIN_PARA",
   "RCON",
   "RINCREMENTAL",
-  "RFIN_MIENTRAS"
+  "RFIN_MIENTRAS",
+  "RREPETIR",
+  "RHASTA_QUE"
   };
 }
 

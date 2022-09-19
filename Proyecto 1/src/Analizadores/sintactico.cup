@@ -14,6 +14,7 @@ import Estructuras.Instrucciones.Switch;
 import Estructuras.Instrucciones.Case;
 import Estructuras.Instrucciones.Main;
 import Estructuras.Instrucciones.For;
+import Estructuras.Instrucciones.DoWhile;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -60,7 +61,7 @@ terminal String RVERDADERO,RFALSO;
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS, RREPETIR, RHASTA_QUE;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -325,6 +326,22 @@ instruccion ::=
                                                                                                     RESULT.addSon("hacer");
                                                                                                     
                                                                                                     RESULT.addSon("finmientras");
+                                                                                                    
+                                                                                                :}
+|RREPETIR instrucciones:a RHASTA_QUE expresion_relacional:b                                     {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new DoWhile((Operacion)b.getIns(), a.getInstructions()));
+                                                                                                    RESULT.addSon("repetir");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hasta_que");
+                                                                                                    RESULT.addSon(b);
+                                                                                                :}
+
+|RREPETIR  RHASTA_QUE expresion_relacional:a                                                    {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(),  new LinkedList<>()));
+                                                                                                    RESULT.addSon("repetir");
+                                                                                                    
+                                                                                                    RESULT.addSon("hasta_que");
+                                                                                                    RESULT.addSon("a");
                                                                                                     
                                                                                                 :}
 ;

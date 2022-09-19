@@ -83,6 +83,8 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "incremental"       {return new Symbol(sym.RINCREMENTAL,yyline,yychar,yytext());}
 "mientras"          {return new Symbol(sym.RMIENTRAS,yyline,yychar,yytext());}
 "fin_mientras"      {return new Symbol(sym.RFIN_MIENTRAS,yyline,yychar,yytext());}
+"repetir"           {return new Symbol(sym.RREPETIR,yyline,yychar,yytext());}
+"hasta_que"         {return new Symbol(sym.RHASTA_QUE,yyline,yychar,yytext());}
 
 "¿"                 {return new Symbol(sym.INTERROGIZQ,yyline,yychar, yytext());}
 "?"                 {return new Symbol(sym.INTERROGDER,yyline,yychar, yytext());}
