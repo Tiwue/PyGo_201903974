@@ -4,30 +4,35 @@
  */
 package Estructuras.Instrucciones;
 
-import java.util.LinkedList;
-
 /**
  *
  * @author steve
  */
-public class Main implements Instruccion {
-
-    private final LinkedList<Instruccion> listaInstrucciones;
+public class Parametro implements Instruccion {
+    private Object nombre;
+    private Tipo_dato tipo; 
     
-    public Main (LinkedList<Instruccion> listaInstrucciones){
-    this.listaInstrucciones = listaInstrucciones;
+    public Parametro(String nombre, Tipo_dato tipo){
+        this.nombre = nombre;
+        this.tipo = tipo;
     }
-    
-    
+            
+    public static enum Tipo_dato{
+        NUMERO,
+        CADENA,
+        BOOLEAN,
+        CARACTER
+    }
     @Override
     public String traducirPython(int tabulaciones) {
-        String cadena = "";
-        cadena += "def main():\n";
-        for(Instruccion ins: listaInstrucciones){
-                cadena += ins.traducirPython(tabulaciones+1);
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
             }
-        cadena +="\nif __name__ =='__main__':\n    main()";
-        return cadena+"\n";
+        traduccion += this.nombre.toString();
+            
+        return traduccion;    
     }
 
     @Override

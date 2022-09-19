@@ -15,6 +15,9 @@ import Estructuras.Instrucciones.Case;
 import Estructuras.Instrucciones.Main;
 import Estructuras.Instrucciones.For;
 import Estructuras.Instrucciones.DoWhile;
+import Estructuras.Instrucciones.Return;
+import Estructuras.Instrucciones.Metodo;
+import Estructuras.Instrucciones.Parametro;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -55,13 +58,13 @@ parser code
 terminal String PTCOMA,PARIZQ,PARDER,CORIZQ,CORDER,LLAVIZQ,LLAVDER, DOLAR,COMSIMPLE, COMA, DOSPTS,INTERROGIZQ, INTERROGDER;
 terminal String MAS,MENOS,POR,DIVIDIDO,RPOTENCIA,RMOD,RMAYOR,RMENOR,RMAYORIGUAL,RMENORIGUAL, RIGUAL, RDIFERENTE, ROR, RAND, RNOT, RINICIO, RFIN;
 terminal String RINGRESAR, RCOMO, RCONVALOR, NOMVARIABLE, NUMDATO, FLOATDATO, CADDATO, BOOLDATO, CARDATO, FLECHAASIGN;
-terminal String ENTERO, CHAR, STRING;
+terminal String ENTERO, CHAR, STRING, IDENTIFICADOR;
 terminal String RVERDADERO,RFALSO;
 
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS, RREPETIR, RHASTA_QUE;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS, RREPETIR, RHASTA_QUE,RRETORNAR,RMETODO, RFIN_METODO, RCON_PARAMETROS;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -74,7 +77,9 @@ non terminal Produccion else_ifs;
 non terminal Produccion cases;
 non terminal String listaVariables;
 non terminal Produccion expresion_valor;
-
+non terminal Produccion condicion;
+non terminal Produccion returns;
+non terminal Produccion listaParametros;
 
 precedence left ROR;
 precedence left RAND;
@@ -85,7 +90,8 @@ precedence left MAS,MENOS;
 precedence left POR,DIVIDIDO,RMOD;
 precedence right RPOTENCIA;
 precedence left PARIZQ, PARDER;
-precedence right UMENOS; 
+precedence right UMENOS;
+precedence right RRETORNAR; 
 
 start with ini; 
 
@@ -148,34 +154,6 @@ instruccion ::=
                                                     RESULT.addSon("]");
                                                     RESULT.addSon(";");
                                                 :}
- | RSI expresion_relacional:a  RENTONCES instrucciones:b RFIN_SI                                                     {:
-                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(), b.getInstructions(),If.Tipo_if.IF));
-                                                                                                                                RESULT.addSon("SI");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon("entonces");
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("fin_si");
-                                                                                                                            :}
-| RSI expresion_relacional:a  instrucciones:b RELSE instrucciones:c RFIN_SI    {:  
-                                                                                                                             RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),c.getInstructions(),If.Tipo_if.IF));
-                                                                                                                                RESULT.addSon("si");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon("de_lo_contrario");
-                                                                                                                                RESULT.addSon(c);
-                                                                                                                                RESULT.addSon("fin_si");   
-                                                                                                                            :} 
- | RSI expresion_relacional:a instrucciones:b else_ifs:l RELSE instrucciones:c RFIN_SI    {:  
-                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),l.getInstructions(),c.getInstructions(),If.Tipo_if.IF));
-                                                                                                                                RESULT.addSon("si");
-                                                                                                                                RESULT.addSon(a);
-                                                                                                                                RESULT.addSon(b);
-                                                                                                                                RESULT.addSon(l);
-                                                                                                                                RESULT.addSon("de_lo_contrario");
-                                                                                                                                RESULT.addSon(c);
-                                                                                                                                RESULT.addSon("fin_si");
-                                                                                                                            :}
-
 | RINGRESAR listaVariables:a RCOMO NUMDATO RCONVALOR expresion_relacional:b PTCOMA                            {:
                                                                                                     RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.NUMERO, (Operacion)b.getIns()));
                                                                                                     RESULT.addSon("INGRESAR");
@@ -234,25 +212,6 @@ instruccion ::=
                                                                                                     RESULT.addSon(";");
                                                                                                 :}
 
-| RSEGUN expresion_relacional:a RHACER cases:b  RFIN_SEGUN                                       {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions()));
-                                                                                                    RESULT.addSon("segun");
-                                                                                                    RESULT.addSon(a);
-                                                                                                    RESULT.addSon("hacer");
-                                                                                                    RESULT.addSon(b);
-                                                                                                    RESULT.addSon("fin_segun");
-                                                                                                :}
-
-| RSEGUN expresion_relacional:a RHACER cases:b RELSE RENTONCES instrucciones:c RFIN_SEGUN                    {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions(),c.getInstructions()));
-                                                                                                    RESULT.addSon("segun");
-                                                                                                    RESULT.addSon(a);
-                                                                                                    RESULT.addSon("hacer");
-                                                                                                    RESULT.addSon(b);
-                                                                                                    RESULT.addSon("else");
-                                                                                                    RESULT.addSon(c);
-                                                                                                    RESULT.addSon("fin_segun");
-                                                                                                :}
 
 //FORS
 
@@ -308,6 +267,7 @@ instruccion ::=
                                                                                                     RESULT.addSon("hacer");
                                                                                                     RESULT.addSon("fin_para");
                                                                                                 :}
+
 //WHILE
 | RMIENTRAS expresion_relacional:a RHACER instrucciones:b RFIN_MIENTRAS                         {:
                                                                                                     RESULT= new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(), b.getInstructions()));
@@ -344,8 +304,154 @@ instruccion ::=
                                                                                                     RESULT.addSon("a");
                                                                                                     
                                                                                                 :}
+|condicion:a                                                                                    {:
+                                                                                                    RESULT= a;
+                                                                                                    
+                                                                                                    
+                                                                                                :}
+|RMETODO IDENTIFICADOR:a instrucciones:b RFIN_METODO                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions()));
+                                                                                                    RESULT.addSon("metodo");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("fin_metodo");
+                                                                                                :}
+|RMETODO IDENTIFICADOR:a RCON_PARAMETROS PARIZQ listaParametros:b PARDER instrucciones:c RFIN_METODO          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions(), c.getInstructions()));
+                                                                                                    RESULT.addSon("metodo");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon("fin_metodo");
+                                                                                                :}
+
 ;
 
+listaParametros ::=
+    listaParametros:l COMA IDENTIFICADOR:a NUMDATO:b                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    |listaParametros:l COMA IDENTIFICADOR:a FLOATDATO:b                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    |listaParametros:l COMA IDENTIFICADOR:a CADDATO:b                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CADENA));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    |listaParametros:l COMA IDENTIFICADOR:a BOOLDATO:b                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.BOOLEAN));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :} 
+    |listaParametros:l COMA  IDENTIFICADOR:a CARDATO:b                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CARACTER));
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    | IDENTIFICADOR:a NUMDATO:b                                                                     {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}           
+    |IDENTIFICADOR:a FLOATDATO:b                                                                    {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    |IDENTIFICADOR:a CADDATO:b                                                                     {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CADENA));
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    IDENTIFICADOR:a BOOLDATO:b                                                                     {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.BOOLEAN));
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :}
+    IDENTIFICADOR:a CARDATO:b                                                                     {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CARACTER));
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(b);
+                                                                                                       :} 
+;                                                                 
+    
+
+condicion::=
+ RSI expresion_relacional:a  RENTONCES instrucciones:b RFIN_SI                                                     {:
+                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(), b.getInstructions(),If.Tipo_if.IF));
+                                                                                                                                RESULT.addSon("SI");
+                                                                                                                                RESULT.addSon(a);
+                                                                                                                                RESULT.addSon("entonces");
+                                                                                                                                RESULT.addSon(b);
+                                                                                                                                RESULT.addSon("fin_si");
+                                                                                                                            :}
+| RSI expresion_relacional:a  instrucciones:b RELSE instrucciones:c RFIN_SI    {:  
+                                                                                                                             RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),c.getInstructions(),If.Tipo_if.IF));
+                                                                                                                                RESULT.addSon("si");
+                                                                                                                                RESULT.addSon(a);
+                                                                                                                                RESULT.addSon(b);
+                                                                                                                                RESULT.addSon("de_lo_contrario");
+                                                                                                                                RESULT.addSon(c);
+                                                                                                                                RESULT.addSon("fin_si");   
+                                                                                                                            :} 
+ | RSI expresion_relacional:a instrucciones:b else_ifs:l RELSE instrucciones:c RFIN_SI    {:  
+                                                                                                                                RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(),b.getInstructions(),l.getInstructions(),c.getInstructions(),If.Tipo_if.IF));
+                                                                                                                                RESULT.addSon("si");
+                                                                                                                                RESULT.addSon(a);
+                                                                                                                                RESULT.addSon(b);
+                                                                                                                                RESULT.addSon(l);
+                                                                                                                                RESULT.addSon("de_lo_contrario");
+                                                                                                                                RESULT.addSon(c);
+                                                                                                                                RESULT.addSon("fin_si");
+                                                                                                                            :}
+| RSEGUN expresion_relacional:a RHACER cases:b  RFIN_SEGUN                                       {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions()));
+                                                                                                    RESULT.addSon("segun");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("fin_segun");
+                                                                                                :}
+
+| RSEGUN expresion_relacional:a RHACER cases:b RELSE RENTONCES instrucciones:c RFIN_SEGUN                    {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Switch((Operacion)a.getIns(),b.getInstructions(),c.getInstructions()));
+                                                                                                    RESULT.addSon("segun");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("else");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_segun");
+                                                                                                :}
+;
+ 
 cases::=
     cases:l INTERROGIZQ expresion_relacional:a INTERROGDER RENTONCES instrucciones:b            {:
                                                                                                     RESULT=new Produccion(new Nodo("Casos"), l.getInstructions());
@@ -373,7 +479,22 @@ cases::=
 listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                                        {:RESULT= a +"," + b;:}
     |NOMVARIABLE:a                                                                            {:RESULT = a;:}
 ;
-    
+
+
+returns::=
+      RRETORNAR expresion_relacional:a PTCOMA                                                    {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Return"), new Return((Operacion)a.getIns()));
+                                                                                                        RESULT.addSon("retornar");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}   
+      |RRETORNAR condicion:a PTCOMA                                                             {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Return"), new Return(a.getIns()));
+                                                                                                        RESULT.addSon("retornar");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}  
+;    
 //ELIFS
 else_ifs ::= 
     else_ifs:l ROSI  expresion_relacional:a RENTONCES instrucciones:b                                 {:                                                                                                                                

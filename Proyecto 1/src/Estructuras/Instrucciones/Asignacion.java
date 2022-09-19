@@ -23,7 +23,7 @@ public class Asignacion implements Instruccion {
        String cadena = "";
        String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "\t";
+            tabs += "    ";
             }
         cadena += tabs;    
        String[] nombres = listaNombresVariables.split(",");

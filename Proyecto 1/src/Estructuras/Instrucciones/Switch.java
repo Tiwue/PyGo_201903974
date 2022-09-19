@@ -43,7 +43,7 @@ public class Switch implements Instruccion{
         String traduccion="";
         String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "\t";
+            tabs += "    ";
             } 
       
         if(listaCasesInstrucciones != null)

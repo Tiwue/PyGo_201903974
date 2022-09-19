@@ -92,7 +92,7 @@ public class If implements Instruccion{
         String traduccion="";
         String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "\t";
+            tabs += "    ";
             }
         
         if(this.tipo == Tipo_if.IF){

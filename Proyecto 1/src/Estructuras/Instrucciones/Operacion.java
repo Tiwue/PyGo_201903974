@@ -105,7 +105,7 @@ public class Operacion implements Instruccion{
         
         String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "\t";
+            tabs += "    ";
             }
         /* ======== OPERACIONES ARITMETICAS ======== */
         if(tipo== Tipo_operacion.DIVISION){

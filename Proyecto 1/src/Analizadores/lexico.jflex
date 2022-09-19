@@ -25,7 +25,7 @@ CADENA = [\"]([^\"\n]|(\\\"))*[\"]
 COMENTARIO = ("//".*)|("//".*\n)
 COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
-
+IDENTIFICADOR = ([a-zA-Z_ñÑ])([a-z0-9A-Z_ñÑ])*
 
 %{
     public void addError(MiError error)
@@ -62,7 +62,7 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "ingresar"          {return new Symbol(sym.RINGRESAR,yyline,yychar,yytext());}
 "como"              {return new Symbol(sym.RCOMO,yyline,yychar,yytext());}
 "con_valor"         {return new Symbol(sym.RCONVALOR,yyline,yychar,yytext()); }
-"Numero"            {return new Symbol(sym.NUMDATO,yyline,yychar,yytext());} 
+"entero"            {return new Symbol(sym.NUMDATO,yyline,yychar,yytext());} 
 "Float"             {return new Symbol(sym.FLOATDATO,yyline,yychar,yytext());} 
 "Cadena"            {return new Symbol(sym.CADDATO,yyline,yychar,yytext());} 
 "Boolean"           {return new Symbol(sym.BOOLDATO,yyline,yychar,yytext());} 
@@ -85,6 +85,10 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "fin_mientras"      {return new Symbol(sym.RFIN_MIENTRAS,yyline,yychar,yytext());}
 "repetir"           {return new Symbol(sym.RREPETIR,yyline,yychar,yytext());}
 "hasta_que"         {return new Symbol(sym.RHASTA_QUE,yyline,yychar,yytext());}
+"retornar"          {return new Symbol(sym.RRETORNAR,yyline,yychar,yytext());}
+"metodo"            {return new Symbol(sym.RMETODO,yyline,yychar,yytext());}
+"fin_metodo"        {return new Symbol(sym.RFIN_METODO,yyline,yychar,yytext());}
+"con_parametros"    {return new Symbol(sym.RCON_PARAMETROS,yyline,yychar,yytext());}
 
 "¿"                 {return new Symbol(sym.INTERROGIZQ,yyline,yychar, yytext());}
 "?"                 {return new Symbol(sym.INTERROGDER,yyline,yychar, yytext());}
@@ -116,6 +120,7 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 {COMENTARIOMULTI}   {}
 {CARACTER}          {return new Symbol(sym.CHAR,yyline,yychar,(yytext()).substring(1,yytext().length()-1));}
 {CADENA}            {return new Symbol(sym.STRING, yyline, yychar, (yytext()).substring(1,yytext().length()-1));}
+{IDENTIFICADOR}     {return new Symbol(sym.IDENTIFICADOR,yyline,yychar, yytext());} 
 
 . {
     System.out.println("Este es un error lexico: "+yytext()+

@@ -4,20 +4,24 @@
  */
 package Estructuras.Instrucciones;
 
-import java.util.LinkedList;
-
 /**
  *
  * @author steve
  */
-public class DoWhile implements Instruccion{
-    private Operacion condicion;
-    private LinkedList<Instruccion> listaInstrucciones;
+public class Return implements Instruccion{
+
+    private Instruccion condicion;
+    private Operacion valor;
     
-    public DoWhile(Operacion condicion, LinkedList<Instruccion> listaInstrucciones){
-    this.condicion = condicion;
-    this.listaInstrucciones = listaInstrucciones;
+    public Return(Instruccion condicion){
+    
+        this.condicion = condicion;
     }
+    
+    public Return (Operacion valor){
+    this.valor = valor;
+    }
+    
     
     @Override
     public String traducirPython(int tabulaciones) {
@@ -26,13 +30,14 @@ public class DoWhile implements Instruccion{
             for(int i=0; i<tabulaciones;i++){
             tabs += "    ";
             }
-        
-        traduccion += tabs + "_valor_ = true\n"+tabs + "while _valor_ == True:\n";
-        for(Instruccion ins:listaInstrucciones){
-            traduccion +=ins.traducirPython(tabulaciones + 1);
-        }
-        traduccion += "\n"+tabs+"    "+"if "+this.condicion.traducirPython(0)+" :\n"+tabs+"        break\n";
-        return traduccion+"\n";
+        if(this.condicion != null){
+            traduccion += tabs + "return " + this.condicion.traducirPython(0) +"\n";
+        }else if(this.valor != null){
+            traduccion += tabs + "return " + this.valor.traducirPython(0) +"\n";
+        }    
+           
+            
+        return traduccion+"\n";    
     }
 
     @Override

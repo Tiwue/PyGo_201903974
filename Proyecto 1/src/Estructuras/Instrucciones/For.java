@@ -37,7 +37,7 @@ public class For implements Instruccion{
         String traduccion="";
         String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "\t";
+            tabs += "    ";
             }
         traduccion += tabs;
         if(this.salto != null){
