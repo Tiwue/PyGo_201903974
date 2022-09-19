@@ -25,7 +25,7 @@ CADENA = [\"]([^\"\n]|(\\\"))*[\"]
 COMENTARIO = ("//".*)|("//".*\n)
 COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
-IDENTIFICADOR = ([a-zA-Z_ñÑ])([a-z0-9A-Z_ñÑ])*
+IDENTIFICADOR = ([a-zA-ZñÑ])([a-z0-9A-Z_ñÑ])*
 
 %{
     public void addError(MiError error)

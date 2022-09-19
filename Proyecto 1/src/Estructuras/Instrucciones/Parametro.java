@@ -9,10 +9,10 @@ package Estructuras.Instrucciones;
  * @author steve
  */
 public class Parametro implements Instruccion {
-    private Object nombre;
+    private Operacion nombre;
     private Tipo_dato tipo; 
     
-    public Parametro(String nombre, Tipo_dato tipo){
+    public Parametro(Operacion nombre, Tipo_dato tipo){
         this.nombre = nombre;
         this.tipo = tipo;
     }
@@ -30,7 +30,7 @@ public class Parametro implements Instruccion {
             for(int i=0; i<tabulaciones;i++){
             tabs += "    ";
             }
-        traduccion += this.nombre.toString();
+        traduccion += this.nombre.traducirPython(0);
             
         return traduccion;    
     }

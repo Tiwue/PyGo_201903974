@@ -330,73 +330,73 @@ instruccion ::=
 ;
 
 listaParametros ::=
-    listaParametros:l COMA IDENTIFICADOR:a NUMDATO:b                                                {:                                                                                                                                
+    listaParametros:l COMA expresion_relacional:a NUMDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    |listaParametros:l COMA IDENTIFICADOR:a FLOATDATO:b                                                {:                                                                                                                                
+    |listaParametros:l COMA expresion_relacional:a FLOATDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    |listaParametros:l COMA IDENTIFICADOR:a CADDATO:b                                                {:                                                                                                                                
+    |listaParametros:l COMA expresion_relacional:a CADDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CADENA));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.CADENA));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    |listaParametros:l COMA IDENTIFICADOR:a BOOLDATO:b                                                {:                                                                                                                                
+    |listaParametros:l COMA expresion_relacional:a BOOLDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.BOOLEAN));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.BOOLEAN));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :} 
-    |listaParametros:l COMA  IDENTIFICADOR:a CARDATO:b                                                {:                                                                                                                                
+    |listaParametros:l COMA  expresion_relacional:a CARDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CARACTER));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.CARACTER));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    | IDENTIFICADOR:a NUMDATO:b                                                                     {:                                                                                                                                
+    | expresion_relacional:a NUMDATO:b                                                                     {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}           
-    |IDENTIFICADOR:a FLOATDATO:b                                                                    {:                                                                                                                                
+    |expresion_relacional:a FLOATDATO:b                                                                    {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    |IDENTIFICADOR:a CADDATO:b                                                                     {:                                                                                                                                
+    |expresion_relacional:a CADDATO:b                                                                     {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CADENA));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.CADENA));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    IDENTIFICADOR:a BOOLDATO:b                                                                     {:                                                                                                                                
+    |expresion_relacional:a BOOLDATO:b                                                                     {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.BOOLEAN));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.BOOLEAN));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
-    IDENTIFICADOR:a CARDATO:b                                                                     {:                                                                                                                                
+    |expresion_relacional:a CARDATO:b                                                                     {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro(a, Parametro.Tipo_dato.CARACTER));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.CARACTER));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :} 
