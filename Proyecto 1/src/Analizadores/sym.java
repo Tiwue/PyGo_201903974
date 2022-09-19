@@ -13,6 +13,7 @@ public class sym {
   public static final int RINICIO = 30;
   public static final int CHAR = 43;
   public static final int POR = 17;
+  public static final int RFIN_MIENTRAS = 67;
   public static final int RENTONCES = 55;
   public static final int RFALSO = 46;
   public static final int NUMDATO = 36;
@@ -142,7 +143,8 @@ public class sym {
   "RHASTA",
   "RFIN_PARA",
   "RCON",
-  "RINCREMENTAL"
+  "RINCREMENTAL",
+  "RFIN_MIENTRAS"
   };
 }
 

@@ -81,8 +81,8 @@ NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
 "fin_para"          {return new Symbol(sym.RFIN_PARA,yyline,yychar,yytext());}
 "con"               {return new Symbol(sym.RCON,yyline,yychar,yytext());}
 "incremental"       {return new Symbol(sym.RINCREMENTAL,yyline,yychar,yytext());}
-"mientras"
-"fin_mientras"
+"mientras"          {return new Symbol(sym.RMIENTRAS,yyline,yychar,yytext());}
+"fin_mientras"      {return new Symbol(sym.RFIN_MIENTRAS,yyline,yychar,yytext());}
 
 "¿"                 {return new Symbol(sym.INTERROGIZQ,yyline,yychar, yytext());}
 "?"                 {return new Symbol(sym.INTERROGDER,yyline,yychar, yytext());}

@@ -60,7 +60,7 @@ terminal String RVERDADERO,RFALSO;
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -147,17 +147,6 @@ instruccion ::=
                                                     RESULT.addSon("]");
                                                     RESULT.addSon(";");
                                                 :}
- 
- | RMIENTRAS    PARIZQ expresion_relacional:a PARDER LLAVIZQ instrucciones:b LLAVDER    {:
-                                                                                        RESULT=new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(), b.getInstructions()));
-                                                                                        RESULT.addSon("MIENTRAS");
-                                                                                        RESULT.addSon("(");
-                                                                                        RESULT.addSon(a);
-                                                                                        RESULT.addSon(")");
-                                                                                        RESULT.addSon("{");
-                                                                                        RESULT.addSon(b);
-                                                                                        RESULT.addSon("}");
-                                                                                    :}
  | RSI expresion_relacional:a  RENTONCES instrucciones:b RFIN_SI                                                     {:
                                                                                                                                 RESULT=new Produccion(new Nodo("Instruccion"), new If((Operacion)a.getIns(), b.getInstructions(),If.Tipo_if.IF));
                                                                                                                                 RESULT.addSon("SI");
@@ -317,6 +306,26 @@ instruccion ::=
                                                                                                     RESULT.addSon(d);
                                                                                                     RESULT.addSon("hacer");
                                                                                                     RESULT.addSon("fin_para");
+                                                                                                :}
+//WHILE
+| RMIENTRAS expresion_relacional:a RHACER instrucciones:b RFIN_MIENTRAS                         {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(), b.getInstructions()));
+                                                                                                    RESULT.addSon("mientras");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("finmientras");
+                                                                                                    
+                                                                                                :}
+
+| RMIENTRAS expresion_relacional:a RHACER RFIN_MIENTRAS                                         {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new While((Operacion)a.getIns(),  new LinkedList<>()));
+                                                                                                    RESULT.addSon("mientras");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon("hacer");
+                                                                                                    
+                                                                                                    RESULT.addSon("finmientras");
+                                                                                                    
                                                                                                 :}
 ;
 

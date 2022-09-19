@@ -41,14 +41,14 @@ public class While implements Instruccion{
         String traduccion="";
         String tabs ="";
             for(int i=0; i<tabulaciones;i++){
-            tabs += "   ";
+            tabs += "\t";
             }
-        traduccion += tabs; 
-        traduccion += "Mientras esta condicion se cumpla "+condicion.traducirPython(0)+" tenemos que hacer:\n";
+        
+        traduccion += tabs + "while "+condicion.traducirPython(0)+":\n";
         for(Instruccion ins:listaInstrucciones){
             traduccion +=ins.traducirPython(tabulaciones + 1);
         }
-        return traduccion;
+        return traduccion+"\n";
     }
 
     @Override
