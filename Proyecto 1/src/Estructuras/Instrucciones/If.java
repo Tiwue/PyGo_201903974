@@ -146,7 +146,7 @@ public class If implements Instruccion {
         if (this.tipo == Tipo_if.IF) {
             traduccion += tabs + "if " + this.condicion.traducirGo(0) + "{\n";
         } else if (this.tipo == Tipo_if.ELIF) {
-            traduccion += tabs + "}else if " + this.condicion.traducirGo(0) + "{\n";
+            traduccion += tabs + "else if " + this.condicion.traducirGo(0) + "{\n";
         }
 
         if (listaInstrucciones != null) {
@@ -154,19 +154,28 @@ public class If implements Instruccion {
                 traduccion += ins.traducirGo(tabulaciones + 1);
             }
         }
+        if(this.tipo == Tipo_if.IF){
+            traduccion += tabs + "}";
+            
+        }
         if (listaElseIfInstrucciones != null) {
 
             for (Instruccion ins : listaElseIfInstrucciones) {
                 traduccion += ins.traducirGo(tabulaciones);
             }
         }
+        if(this.tipo == Tipo_if.ELIF){
+            traduccion += tabs + "}";
+            
+        }
         if (listaInsElse != null) {
-            traduccion += tabs + "}else{\n";
+            traduccion += tabs + "else{\n";
             for (Instruccion ins : listaInsElse) {
                 traduccion += ins.traducirGo(tabulaciones + 1);
             }
+            traduccion += tabs + "}\n";
         }
-        traduccion += tabs + "}\n";
-        return traduccion + "\n";
+        
+        return traduccion;
     }
 }

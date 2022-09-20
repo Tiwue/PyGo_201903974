@@ -21,6 +21,7 @@ public class Operacion implements Instruccion{
         PARENTESIS,
         NEGATIVO,
         NUMERO,
+        FLOAT,
         CARACTER,
         IDENTIFICADOR,
         CADENA,
@@ -206,7 +207,7 @@ public class Operacion implements Instruccion{
         }else if(tipo== Tipo_operacion.NEGATIVO){
             return tabs + "-" + operadorIzq.traducirGo(0);
         }else if(tipo==Tipo_operacion.POTENCIA){
-            String cadena = tabs + "math.Pow(float64(" + operadorIzq.traducirGo(0)+ " ),float64( " + operadorDer.traducirGo(0)+"))";
+            String cadena = tabs + "int(math.Pow(float64(" + operadorIzq.traducirGo(0)+ " ),float64( " + operadorDer.traducirGo(0)+")))";
             return cadena;
         }else if(tipo==Tipo_operacion.MODULO){
             return operadorIzq.traducirGo(tabulaciones) + " % " + operadorDer.traducirGo(0);

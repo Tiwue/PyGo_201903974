@@ -58,7 +58,7 @@ public class While implements Instruccion{
             for(int i=0; i<tabulaciones;i++){
             tabs += "    ";
             }
-        traduccion += tabs +"for true {\n"+tabs+"    if !("+condicion.traducirGo(0)+"){\nbreak"+tabs+"    \n}";
+        traduccion += tabs +"for true {\n"+tabs+"    if !("+condicion.traducirGo(0)+"){\n"+ tabs+"    "+"break\n"+tabs+"    }\n";
         for(Instruccion ins:listaInstrucciones){
             traduccion +=ins.traducirGo(tabulaciones + 1);
         }

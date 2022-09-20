@@ -75,10 +75,10 @@ public class Switch implements Instruccion{
             for(int i=0; i<tabulaciones;i++){
             tabs += "    ";
             } 
-        traduccion += tabs +"switch" + this.condicion.traducirGo(0)+" {";
+        traduccion += tabs +"switch " + this.condicion.traducirGo(0)+" {\n";
         if(listaCasesInstrucciones != null){
            for(Instruccion ins: listaCasesInstrucciones){
-                traduccion += tabs +"    case "+ins.traducirGo(0);
+                traduccion += tabs +"    case "+ins.traducirGo(tabulaciones + 1);
             }
         }
         if(listaInsElse != null){

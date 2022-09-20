@@ -84,6 +84,7 @@ non terminal Produccion condicion;
 non terminal Produccion returns;
 non terminal Produccion listaParametros;
 non terminal Produccion instruccionesFuncion;
+non terminal Produccion listaValores;
 
 precedence left ROR;
 precedence left RAND;
@@ -484,8 +485,8 @@ instruccion ::=
                                                                                                         RESULT.addSon(")");
                                                                                                         RESULT.addSon(";");
                                                                                                         :}  
-|REJECUTAR IDENTIFICADOR:a PARIZQ  listaVariables:b PARDER PTCOMA                                {:  
-                                                                                                        RESULT=new Produccion(new Nodo("Llamada"), new Llamada(a, b));
+|REJECUTAR IDENTIFICADOR:a PARIZQ  listaValores:b PARDER PTCOMA                                {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Llamada"), new Llamada(a, b.getInstructions()));
                                                                                                         RESULT.addSon("ejecutar");
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon("(");
@@ -579,6 +580,7 @@ listaParametros ::=
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :} 
+
 ;                                                                 
     
 
@@ -659,6 +661,23 @@ listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                          
     |NOMVARIABLE:a                                                                            {:RESULT = a;:}
 ;
 
+listaValores ::=
+    listaValores:l COMA expresion_relacional:a                                                {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
+                                                                                                        RESULT.addIns(a.getIns());
+                                                                                                        RESULT.addSon(l);
+                                                                                                        RESULT.addSon(",");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        
+                                                                                                       :}
+ | expresion_relacional:a                                                                     {:                                                                                                                                
+                                                                                                        RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
+                                                                                                        RESULT.addIns(a.getIns());
+                                                                                                        RESULT.addSon(a);
+                                                                                                        
+                                                                                                       :} 
+
+;
 
 
 returns::=
@@ -699,6 +718,7 @@ else_ifs ::=
                                                                                                         RESULT.addSon("entonces");
                                                                                                         RESULT.addSon(b);
                                                                                                         :}
+
 ;
 
 

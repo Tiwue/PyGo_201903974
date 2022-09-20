@@ -7,6 +7,7 @@ package Interfaz;
 import Estructuras.Arbol;
 import Estructuras.Instrucciones.Instruccion;
 import Estructuras.listaErrores;
+import Estructuras.MiError;
 import analizadores.Sintactico;
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +20,6 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-
 
 /**
  *
@@ -217,115 +217,125 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void botonCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCargarActionPerformed
-        Principal referencia = this;  
+        Principal referencia = this;
         try {
-              // TODO add your handling code here:
-              JFileChooser fileChooser = new JFileChooser();
-               fileChooser.showOpenDialog(referencia);
-                String pat=fileChooser.getSelectedFile().getPath();
-              File doc = new File(pat);
-              
-            try (BufferedReader obj = new BufferedReader(new FileReader(doc))) {
-                String strng,texto="";
-                while ((strng = obj.readLine()) != null)
-                    texto = texto + strng+"\n";
+            // TODO add your handling code here:
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showOpenDialog(referencia);
+            String pat = fileChooser.getSelectedFile().getPath();
+            File doc = new File(pat);
+
+            try ( BufferedReader obj = new BufferedReader(new FileReader(doc))) {
+                String strng, texto = "";
+                while ((strng = obj.readLine()) != null) {
+                    texto = texto + strng + "\n";
+                }
                 textArea_Entrada.setText(texto);
-                String nombre= doc.getName();
-                actual= new Utils.Archivo(pat,nombre);
+                String nombre = doc.getName();
+                actual = new Utils.Archivo(pat, nombre);
                 obj.close();
             }
-              
-              
-          } catch (IOException ex) {
-              Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-          }
+
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_botonCargarActionPerformed
 
     private void botonAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAnalizarActionPerformed
-      interpretar(textArea_Entrada.getText());
+        interpretar(textArea_Entrada.getText());
     }//GEN-LAST:event_botonAnalizarActionPerformed
-    
-     private void interpretar(String texto) {
+
+    private void interpretar(String texto) {
         try {
-            
+
             errores = new listaErrores();
-            instrucciones= new LinkedList<>();
+            instrucciones = new LinkedList<>();
             traduccionPython = "";
             traduccionGolang = "";
             analizadores.Sintactico sintactico = new analizadores.Sintactico(
-            new analizadores.Lexico(new BufferedReader(new StringReader(texto))));
+                    new analizadores.Lexico(new BufferedReader(new StringReader(texto))));
             //analizando
             sintactico.parse();
-            //this.arbol= sintactico.getArbol();
-            instrucciones=sintactico.getAST();
+            this.arbol = sintactico.getArbol();
+            instrucciones = sintactico.getAST();
             imprimir("Analisis hecho");
-            if (errores.isEmpty()){
+            if (errores.isEmpty()) {
                 traduccionPython = traducirIntruccionesPython(instrucciones);
-                //traduccionGolang = traducirIntruccionesGo(instrucciones);
+                traduccionGolang = traducirIntruccionesGo(instrucciones);
                 textArea_Go.setText(traduccionGolang);
                 textArea_Python.setText(traduccionPython);
-            }else{
+            } else {
                 imprimir("Se encontraton Errores en la entrada\n Generando Reporte de  Errores...");
                 generarReporteErrores();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        } 
+        }
     }
-     
-     
-    public void imprimir(String texto){
-    String cadena=Consola.getText();
-    cadena = cadena + "\n"+texto;
-    Consola.setText(cadena);
-    } 
-    
+
+    public void imprimir(String texto) {
+        String cadena = Consola.getText();
+        cadena = cadena + "\n" + texto;
+        Consola.setText(cadena);
+    }
+
     public String traducirIntruccionesPython(LinkedList<Instruccion> instrucciones) {
-        if(instrucciones==null){
-            return("No es posible ejecutar las instrucciones porque\r\n"
+        if (instrucciones == null) {
+            return ("No es posible ejecutar las instrucciones porque\r\n"
                     + "el árbol no fue cargado de forma adecuada por la existencia\r\n"
                     + "de errores léxicos o sintácticos.");
         }
         //Se ejecuta cada instruccion en el ast, es decir, cada instruccion de 
         //la lista principal de instrucciones.
-        
+
         String traduccion = "";
-        
-        for(Instruccion ins:instrucciones){
+
+        for (Instruccion ins : instrucciones) {
             //Si existe un error léxico o sintáctico en cierta instrucción esta
             //será inválida y se cargará como null, por lo tanto no deberá ejecutarse
             //es por esto que se hace esta validación.
-            if(ins!=null)
+            if (ins != null) {
                 traduccion += ins.traducirPython(0);
+            }
         }
-        
+
         return traduccion;
     }
-    
+
     public String traducirIntruccionesGo(LinkedList<Instruccion> instrucciones) {
-        if(instrucciones==null){
-            return("No es posible ejecutar las instrucciones porque\r\n"
+        if (instrucciones == null) {
+            return ("No es posible ejecutar las instrucciones porque\r\n"
                     + "el árbol no fue cargado de forma adecuada por la existencia\r\n"
                     + "de errores léxicos o sintácticos.");
         }
         //Se ejecuta cada instruccion en el ast, es decir, cada instruccion de 
         //la lista principal de instrucciones.
-        
+
         String traduccion = "";
-        
-        for(Instruccion ins:instrucciones){
+        traduccion = "package main\n\n import(\n    \"math\";\n    \"fmt\")\n\n";
+
+        for (Instruccion ins : instrucciones) {
             //Si existe un error léxico o sintáctico en cierta instrucción esta
             //será inválida y se cargará como null, por lo tanto no deberá ejecutarse
             //es por esto que se hace esta validación.
-            if(ins!=null)
+            if (ins != null) {
                 traduccion += ins.traducirGo(0);
+            }
         }
-        
+
         return traduccion;
     }
-    
-    public void generarReporteErrores(){
-            String cadena="""
+
+    public String calcularEspacios(int espacios) {
+        String cadena = "";
+        for (int i = 0; i < espacios - 1; i++) {
+            cadena += " ";
+        }
+        return cadena;
+    }
+
+    public void generarReporteErrores() {
+        String cadena = """
                           <!DOCTYPE html>
                           <html lang="en">
                           <head>
@@ -340,52 +350,57 @@ public class Principal extends javax.swing.JFrame {
                           
                           <div class="container" align="center">
                             <h2>Reporte de Errores</h2>
+                            </div>
                             <p></p>
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>#</th>
-                                  <th>Tipo de Error</th>
-                                  <th>Descripcion</th>
-                                  <th>Linea</th>
-                                  <th>Columna</th>
-                                </tr>
-                              </thead>
-                              <tbody>""";
-            for(int i=0;i<errores.size();i++){
-                        cadena= cadena + "\n<tr>";
-                        int numero=i+1;
-                        cadena = cadena + "\n<td>"+ numero +"</td>";
-                        cadena = cadena + "\n<td>"+errores.get(i).getTipo()+"</td>";
-                        cadena = cadena + "\n<td>"+errores.get(i).getDescripcion()+"</td>";
-                        cadena = cadena + "\n<td>"+errores.get(i).getFila()+"</td>";
-                        cadena = cadena + "\n<td>"+errores.get(i).getColumna()+"</td>";
-                        cadena = cadena + "\n</tr>";
-                    }
-            cadena = cadena + "</tbody>\n" + "  </table>\n" + "</div>\n" + "\n" + "</body>\n" + "</html>";
-            FileWriter archivo = null;
-            PrintWriter print = null;
-                try {
-                    archivo = new FileWriter("./Reportes\\\\ERRORES_201903974\\\\ERRORES.html");
-                    print = new PrintWriter(archivo);
-                    print.println(cadena);
-                } catch (IOException e) {
-                }finally{
-                    if(archivo!=null){
-                        try {
-                            archivo.close();
-                            imprimir("Reporte de errores generado");
-                        } catch (IOException ex) {
-                            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                    }
+                             <pre >""";
+        String entrada = textArea_Entrada.getText();
+        String lineas[] = entrada.split("\n");
+        int lineaactual = 0;
+        for (int i = 0; i < errores.size(); i++) {
+            MiError erroractual = errores.get(i);
+            int lineaError = erroractual.getFila();
+            if (lineaError != -1) {
+                while (lineaactual < lineaError && lineaactual < lineas.length) {
+                    cadena += lineas[lineaactual] + "\n";
+                    lineaactual += 1;
                 }
+                cadena += calcularEspacios(erroractual.getColumna()) + "^\n";
+                cadena += calcularEspacios(erroractual.getColumna()) + "|\n";
+                cadena += calcularEspacios(erroractual.getColumna()) + "|\n";
+                cadena += calcularEspacios(erroractual.getColumna()) + " [" + erroractual.getDescripcion() + "]\n\n\n\n";
+            }
+
+        }
+
+        if (lineaactual < lineas.length) {
+            cadena += lineas[lineaactual] + "\n";
+            lineaactual += 1;
+        }
+        cadena +="</pre>";
+        cadena = cadena+ "\n" + "</body>\n" + "</html>";
+        FileWriter archivo = null;
+        PrintWriter print = null;
+        try {
+            archivo = new FileWriter("./Reportes\\\\ERRORES_201903974\\\\ERRORES.html");
+            print = new PrintWriter(archivo);
+            print.println(cadena);
+        } catch (IOException e) {
+        } finally {
+            if (archivo != null) {
+                try {
+                    archivo.close();
+                    imprimir("Reporte de errores generado");
+                } catch (IOException ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+            }
+        }
     }
     /**
      * @param args the command line arguments
      */
-   
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea Consola;

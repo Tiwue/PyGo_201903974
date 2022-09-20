@@ -12,13 +12,13 @@ import java.util.LinkedList;
  */
 public class Llamada implements Instruccion {
     private Object nombre;
-    private String parametros;
+    private LinkedList<Instruccion> parametros;
     
     public Llamada(String nombre ){
     this.nombre = nombre;
     }
     
-    public Llamada(String nombre,String parametros ){
+    public Llamada(String nombre,LinkedList<Instruccion> parametros ){
     this.nombre = nombre;
     this.parametros = parametros;
     }
@@ -31,15 +31,16 @@ public class Llamada implements Instruccion {
             tabs += "    ";
             }
         traduccion += tabs + nombre.toString() + " (";
+        
+        
         if(parametros!=null){
-         String[] nombres = parametros.split(",");
-       for(int i=0;i<nombres.length;i++){
-           if(i==nombres.length-1){
-               traduccion += nombres[i];
-           }else{
-               traduccion += nombres[i] + ", ";
-           }
-       }
+            for(int i = 0;i<parametros.size();i++){
+                if (i == parametros.size()-1){
+                 traduccion += parametros.get(i).traducirPython(0);
+                }else{
+                 traduccion += parametros.get(i).traducirPython(0)+", ";
+                }
+            }
         }
         traduccion +=")\n";
         return traduccion;
@@ -54,14 +55,13 @@ public class Llamada implements Instruccion {
             }
         traduccion += tabs + nombre.toString() + " (";
         if(parametros!=null){
-         String[] nombres = parametros.split(",");
-       for(int i=0;i<nombres.length;i++){
-           if(i==nombres.length-1){
-               traduccion += nombres[i];
-           }else{
-               traduccion += nombres[i] + ", ";
-           }
-       }
+            for(int i = 0;i<parametros.size();i++){
+                if (i == parametros.size()-1){
+                 traduccion += parametros.get(i).traducirGo(0);
+                }else{
+                 traduccion += parametros.get(i).traducirGo(0)+", ";
+                }
+            }
         }
         traduccion +=")\n";
         return traduccion;

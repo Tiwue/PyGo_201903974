@@ -42,7 +42,7 @@ public class Main implements Instruccion {
                 cadena += ins.traducirGo(tabulaciones+1);
             }
         cadena +="}";
-        cadena = "package main\n\n import(\n    \"math\"\n    \"fmt\")" + cadena;
+        
         return cadena+"\n";
     }
     
