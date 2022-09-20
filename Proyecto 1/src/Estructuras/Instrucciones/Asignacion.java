@@ -46,7 +46,17 @@ public class Asignacion implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String cadena = "";
+       String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+            
+       String[] nombres = listaNombresVariables.split(",");
+       for(int i=0;i<nombres.length;i++){
+          cadena +=tabs+ nombres[i] +" = "+valores.traducirGo(0)+"\n";
+       }
+       return cadena+"\n";
     }
 }

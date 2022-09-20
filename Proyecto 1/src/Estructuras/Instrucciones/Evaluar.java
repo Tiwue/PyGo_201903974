@@ -24,7 +24,7 @@ public class Evaluar implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
+    public String traducirGo(int tabulaciones) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

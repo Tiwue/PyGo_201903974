@@ -133,7 +133,8 @@ public class Operacion implements Instruccion{
         }else if(tipo == Tipo_operacion.IDENTIFICADOR){
             return tabs + valor.toString();
         }else if(tipo == Tipo_operacion.CADENA){
-            return tabs + "\""+valor.toString()+"\"";
+            String traduccion = valor.toString().replace("\n", "\\n");
+            return tabs + "\""+traduccion+"\"";
         }else if(tipo == Tipo_operacion.CARACTER){
             char c='0'; 
             if(this.valor.toString().length()>1){
@@ -188,9 +189,90 @@ public class Operacion implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
-        System.out.println("Aun no se crea en go");
-        return "";
+    public String traducirGo(int tabulaciones) {
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        /* ======== OPERACIONES ARITMETICAS ======== */
+        if(tipo== Tipo_operacion.DIVISION){
+            return operadorIzq.traducirGo(tabulaciones)+ " / " + operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.MULTIPLICACION){
+            return operadorIzq.traducirGo(tabulaciones)+ " * " + operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.RESTA){
+            return operadorIzq.traducirGo(tabulaciones)+ " - " + operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.SUMA){
+            return operadorIzq.traducirGo(tabulaciones)+ " + " + operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.NEGATIVO){
+            return tabs + "-" + operadorIzq.traducirGo(0);
+        }else if(tipo==Tipo_operacion.POTENCIA){
+            String cadena = tabs + "math.Pow(float64(" + operadorIzq.traducirGo(0)+ " ),float64( " + operadorDer.traducirGo(0)+"))";
+            return cadena;
+        }else if(tipo==Tipo_operacion.MODULO){
+            return operadorIzq.traducirGo(tabulaciones) + " % " + operadorDer.traducirGo(0);
+        }
+        
+
+        
+        /* ======== OPERACIONES UNARIOS ======== */
+        else if(tipo == Tipo_operacion.NUMERO){
+            return tabs + valor.toString();
+        }else if(tipo == Tipo_operacion.IDENTIFICADOR){
+            return tabs + valor.toString();
+        }else if(tipo == Tipo_operacion.CADENA){
+            String traduccion = valor.toString().replace("\n", "\\n");
+            return tabs + "\""+traduccion+"\"";
+        }else if(tipo == Tipo_operacion.CARACTER){
+            char c='0'; 
+            if(this.valor.toString().length()>1){
+                int valorAscii = Integer.parseInt(this.valor.toString());
+                if((valorAscii>=65 && valorAscii<=90)||(valorAscii>=97 && valorAscii<=122)){
+                 c= (char)valorAscii;
+                }        
+              
+            }else{
+              c=this.valor.toString().charAt(0);
+            }
+            
+            return tabs + "'"+c+"'";
+        }else if(tipo==Tipo_operacion.PARENTESIS){
+            return tabs + "("+operadorIzq.traducirGo(0) + ")";
+        }else if(tipo==Tipo_operacion.BOOLEAN){
+            if("verdadero".equals(this.valor.toString().toLowerCase())){
+             return tabs + "true";
+            }else{
+             return tabs + "false";
+            }
+            
+        }
+        
+        /* ======== OPERACIONES RELACIONALES ======== */
+        else if(tipo== Tipo_operacion.MAYOR_QUE){
+            return operadorIzq.traducirGo(tabulaciones)+ " > " + operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.MENOR_QUE){
+            return operadorIzq.traducirGo(tabulaciones)+ " < " +operadorDer.traducirGo(0);
+        }else if(tipo== Tipo_operacion.CONCATENACION){
+            return operadorIzq.traducirGo(tabulaciones) +" + "+operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.MAYOR_IGUAL_QUE){
+            return operadorIzq.traducirGo(tabulaciones) + " >= " + operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.MENOR_IGUAL_QUE){
+            return operadorIzq.traducirGo(tabulaciones) + " <= " + operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.IGUAL){
+            return operadorIzq.traducirGo(tabulaciones) +" == "+operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.DIFERENTE){
+            return operadorIzq.traducirGo(tabulaciones) +" != "+operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.AND){
+            return operadorIzq.traducirGo(tabulaciones) +" && "+operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.OR){
+            return operadorIzq.traducirGo(tabulaciones) +" || "+operadorDer.traducirGo(0);
+        }else if(tipo==Tipo_operacion.NOT){
+            return tabs + "!"+ operadorIzq.traducirGo(0);
+        }else if(tipo==Tipo_operacion.VARIABLE){
+            return tabs + this.valor.toString();
+        }
+        else{
+            return "";
+        }
     }
     
     

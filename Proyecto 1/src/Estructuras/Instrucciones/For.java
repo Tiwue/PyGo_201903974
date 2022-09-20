@@ -56,8 +56,26 @@ public class For implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+         String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        traduccion += tabs;
+        if(this.salto != null){
+            traduccion += "for " + this.variable.traducirGo(0) + " :="+Val_inicial.traducirGo(0) + "; "+ this.variable.traducirGo(0) +" < "+Val_final.traducirGo(0)+"; "+  this.variable.traducirGo(0)+"+"+salto.traducirGo(0)+"{\n";  
+        }else{
+            traduccion += "for " + this.variable.traducirGo(0) + " :="+Val_inicial.traducirGo(0) + "; "+ this.variable.traducirGo(0) +" < "+Val_final.traducirGo(0)+"; "+  this.variable.traducirGo(0)+"++ {\n";
+        } 
+        if(listaInstrucciones != null)
+            for(Instruccion ins: listaInstrucciones){
+                traduccion += ins.traducirGo(tabulaciones + 1);
+            }
+        traduccion += tabs + "}";    
+             
+            
+        return traduccion+"\n";    
     }
     
 }

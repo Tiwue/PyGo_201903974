@@ -36,8 +36,20 @@ public class DoWhile implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        traduccion += tabs +"for true {\n";
+        for(Instruccion ins:listaInstrucciones){
+            traduccion +=ins.traducirGo(tabulaciones + 1);
+        }
+        traduccion += "\n"+tabs+"    if ("+condicion.traducirGo(0)+"){\n"+tabs+"        break\n"+tabs+"    }";
+        traduccion += tabs +"}";
+        
+        return traduccion + "\n";
     }
     
 }

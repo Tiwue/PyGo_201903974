@@ -46,8 +46,26 @@ public class Llamada implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        traduccion += tabs + nombre.toString() + " (";
+        if(parametros!=null){
+         String[] nombres = parametros.split(",");
+       for(int i=0;i<nombres.length;i++){
+           if(i==nombres.length-1){
+               traduccion += nombres[i];
+           }else{
+               traduccion += nombres[i] + ", ";
+           }
+       }
+        }
+        traduccion +=")\n";
+        return traduccion;
     }
+    
     
 }

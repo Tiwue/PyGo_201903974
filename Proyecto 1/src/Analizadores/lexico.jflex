@@ -21,7 +21,7 @@ BLANCOS=[ \r\t]+
 D=[0-9]+
 DD=[0-9]+("."[  |0-9]+)?
 CARACTER = [\'][a-zA-Z][\']
-CADENA = [\"]([^\"\n]|(\\\"))*[\"]
+CADENA = [\"]([^\"]|(\\\"))*[\"]
 COMENTARIO = ("//".*)|("//".*\n)
 COMENTARIOMULTI = "/*"("*"|[\n\s\t])*([^/*]|[\n\s\t])*("*"|[\n\s\t])*"*/"
 NOMBREVARIABLE = ["_"][a-zA-Z0-9]+["_"]
@@ -62,7 +62,7 @@ IDENTIFICADOR = ([a-zA-ZñÑ])([a-z0-9A-Z_ñÑ])*
 "ingresar"          {return new Symbol(sym.RINGRESAR,yyline,yychar,yytext());}
 "como"              {return new Symbol(sym.RCOMO,yyline,yychar,yytext());}
 "con_valor"         {return new Symbol(sym.RCONVALOR,yyline,yychar,yytext()); }
-"entero"            {return new Symbol(sym.NUMDATO,yyline,yychar,yytext());} 
+"numero"            {return new Symbol(sym.NUMDATO,yyline,yychar,yytext());} 
 "Float"             {return new Symbol(sym.FLOATDATO,yyline,yychar,yytext());} 
 "Cadena"            {return new Symbol(sym.CADDATO,yyline,yychar,yytext());} 
 "Boolean"           {return new Symbol(sym.BOOLDATO,yyline,yychar,yytext());} 

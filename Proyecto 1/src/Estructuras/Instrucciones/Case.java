@@ -37,8 +37,14 @@ public class Case implements Instruccion{
     }
     
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion = "";
+        traduccion += this.condicion.traducirGo(0)+":\n";
+        for(Instruccion ins: listaInstrucciones){
+                traduccion += ins.traducirGo(tabulaciones);
+            }
+        traduccion += "\n";
+        return traduccion;
     }
 
     

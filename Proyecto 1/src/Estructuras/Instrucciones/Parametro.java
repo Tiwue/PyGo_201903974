@@ -19,6 +19,7 @@ public class Parametro implements Instruccion {
             
     public static enum Tipo_dato{
         NUMERO,
+        FLOAT,
         CADENA,
         BOOLEAN,
         CARACTER
@@ -36,8 +37,26 @@ public class Parametro implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        traduccion += this.nombre.traducirGo(0) ;
+        if(tipo ==Tipo_dato.NUMERO){
+       traduccion += " int";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " float64";
+       }
+       else if(tipo ==Tipo_dato.CADENA){
+       traduccion += " string";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " byte";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " bool";
+       }    
+        return traduccion;  
     }
     
 }

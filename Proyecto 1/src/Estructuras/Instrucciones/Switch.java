@@ -46,8 +46,8 @@ public class Switch implements Instruccion{
             tabs += "    ";
             } 
       
-        if(listaCasesInstrucciones != null)
-            for(Instruccion ins: listaCasesInstrucciones){
+        if(listaCasesInstrucciones != null){
+           for(Instruccion ins: listaCasesInstrucciones){
                 if(this.inicio==false){
                 traduccion += tabs + "if "+ this.condicion.traducirPython(0) + " == "+ins.traducirPython(tabulaciones + 1);
                 this.inicio=true;
@@ -56,6 +56,8 @@ public class Switch implements Instruccion{
                 }
                 
             }
+        }
+            
         this.inicio=false;
         if(listaInsElse != null){
             traduccion += tabs+ "else: \n";
@@ -67,8 +69,26 @@ public class Switch implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+         String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            } 
+        traduccion += tabs +"switch" + this.condicion.traducirGo(0)+" {";
+        if(listaCasesInstrucciones != null){
+           for(Instruccion ins: listaCasesInstrucciones){
+                traduccion += tabs +"    case "+ins.traducirGo(0);
+            }
+        }
+        if(listaInsElse != null){
+            traduccion += tabs+ "    default: \n";
+            for(Instruccion ins: listaInsElse){
+                traduccion += ins.traducirGo(tabulaciones + 1);
+            }
+        }
+        traduccion += tabs+"}";
+        return traduccion;
     }
         
 }

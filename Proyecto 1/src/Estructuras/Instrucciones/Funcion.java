@@ -18,6 +18,7 @@ public class Funcion implements Instruccion {
     private boolean traducir = false;
     public static enum Tipo_dato{
         NUMERO,
+        FLOAT,
         CADENA,
         BOOLEAN,
         CARACTER
@@ -69,8 +70,50 @@ public class Funcion implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+       String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        if(traducir){
+        
+        traduccion += tabs + "func " + this.nombre.toString() +"(";
+        if(listaParametros != null){
+            for(int i = 0;i<listaParametros.size();i++){
+                if (i == listaParametros.size()-1){
+                 traduccion += listaParametros.get(i).traducirGo(0);
+                }else{
+                 traduccion += listaParametros.get(i).traducirGo(0)+", ";
+                }
+            }
+                
+           
+        }
+        traduccion +=")";
+        
+               if(tipo ==Tipo_dato.NUMERO){
+       traduccion += " int ";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " float64 ";
+       }
+       else if(tipo ==Tipo_dato.CADENA){
+       traduccion += " string ";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " byte ";
+       }else if(tipo ==Tipo_dato.FLOAT){
+       traduccion += " bool ";
+       }
+                
+        traduccion +="{\n";
+        for(Instruccion ins: listaInstrucciones){
+                traduccion += ins.traducirGo(tabulaciones+1);
+            }
+        traduccion += tabs + "}";
+        }
+        
+        
+        return traduccion+"\n";
     }
     
 }

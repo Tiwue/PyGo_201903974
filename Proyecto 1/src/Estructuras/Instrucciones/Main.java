@@ -35,8 +35,15 @@ public class Main implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+       String cadena = "";
+        cadena += "func main(){\n";
+        for(Instruccion ins: listaInstrucciones){
+                cadena += ins.traducirGo(tabulaciones+1);
+            }
+        cadena +="}";
+        cadena = "package main\n\n import(\n    \"math\"\n    \"fmt\")" + cadena;
+        return cadena+"\n";
     }
     
 }

@@ -61,8 +61,35 @@ public class Metodo implements Instruccion{
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion="";
+        String tabs ="";
+            for(int i=0; i<tabulaciones;i++){
+            tabs += "    ";
+            }
+        if(traducir){
+        
+        traduccion += tabs + "func " + this.nombre.toString() +"(";
+        if(listaParametros != null){
+            for(int i = 0;i<listaParametros.size();i++){
+                if (i == listaParametros.size()-1){
+                 traduccion += listaParametros.get(i).traducirGo(0);
+                }else{
+                 traduccion += listaParametros.get(i).traducirGo(0)+", ";
+                }
+            }
+                
+           
+        }
+        traduccion +="){\n";
+        for(Instruccion ins: listaInstrucciones){
+                traduccion += ins.traducirGo(tabulaciones+1);
+            }
+        traduccion += tabs + "}";
+        }
+        
+        
+        return traduccion+"\n";
     }
     
 }

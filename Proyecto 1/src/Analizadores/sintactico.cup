@@ -93,7 +93,7 @@ precedence left RMAYOR, RMENOR, RMAYORIGUAL, RMENORIGUAL;
 precedence left MAS,MENOS;
 precedence left POR,DIVIDIDO,RMOD;
 precedence right RPOTENCIA;
-precedence left PARIZQ, PARDER;
+precedence left PARIZQ, PARDER, CORIZQ, CORDER;
 precedence right UMENOS;
 precedence right RRETORNAR; 
 
@@ -200,7 +200,7 @@ instruccion ::=
                                                                                                     RESULT.addSon(";");
                                                                                                 :}
 | RINGRESAR listaVariables:a RCOMO FLOATDATO RCONVALOR expresion_relacional:b PTCOMA                       {:
-                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.NUMERO, (Operacion)b.getIns()));
+                                                                                                    RESULT=new Produccion(new Nodo("Declaracion"), new Declaracion(a, Declaracion.Tipo_dato.FLOAT, (Operacion)b.getIns()));
                                                                                                     RESULT.addSon("INGRESAR");
                                                                                                     RESULT.addSon(a);
                                                                                                     RESULT.addSon("como"); 
@@ -374,7 +374,7 @@ instruccion ::=
                                                                                                     RESULT.addSon("fin_funcion");
                                                                                                 :}
 |RFUNCION IDENTIFICADOR:a FLOATDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),false));
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.FLOAT, c.getInstructions(),false));
                                                                                                     parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),true));
                                                                                                     RESULT.addSon("funcion");
                                                                                                     RESULT.addSon(a);
@@ -424,7 +424,7 @@ instruccion ::=
                                                                                                     RESULT.addSon("fin_funcion");
                                                                                                 :}
 |RFUNCION IDENTIFICADOR:a FLOATDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(), d.getInstructions(), false));
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.FLOAT, c.getInstructions(), d.getInstructions(), false));
                                                                                                     parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO,c.getInstructions(), d.getInstructions(), true));
                                                                                                     RESULT.addSon("funcion");
                                                                                                     RESULT.addSon(a);
@@ -519,7 +519,7 @@ listaParametros ::=
                                                                                                        :}
     |listaParametros:l COMA expresion_relacional:a FLOATDATO:b                                                {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("lista parametros"), l.getInstructions());
-                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.FLOAT));
                                                                                                         RESULT.addSon(l);
                                                                                                         RESULT.addSon(",");
                                                                                                         RESULT.addSon(a);
@@ -557,7 +557,7 @@ listaParametros ::=
                                                                                                        :}           
     |expresion_relacional:a FLOATDATO:b                                                                    {:                                                                                                                                
                                                                                                         RESULT=new Produccion(new Nodo("parametro"), new LinkedList<>());
-                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.NUMERO));
+                                                                                                        RESULT.addIns(new Parametro((Operacion)a.getIns(), Parametro.Tipo_dato.FLOAT));
                                                                                                         RESULT.addSon(a);
                                                                                                         RESULT.addSon(b);
                                                                                                        :}
@@ -660,6 +660,7 @@ listaVariables ::= listaVariables:a COMA NOMVARIABLE:b                          
 ;
 
 
+
 returns::=
       RRETORNAR expresion_relacional:a PTCOMA                                                    {:  
                                                                                                         RESULT=new Produccion(new Nodo("Return"), new Return((Operacion)a.getIns()));
@@ -737,7 +738,7 @@ expresion_relacional  ::=
 |expresion_relacional:a  RDIFERENTE   expresion_relacional:b            {:
                                                     RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.DIFERENTE));
                                                     RESULT.addSon(a);
-                                                    RESULT.addSon("diferente");
+                                                    RESULT.addSon("es_diferente");
                                                     RESULT.addSon(b);
                                                 :}  
 
@@ -753,11 +754,11 @@ expresion_relacional  ::=
                                                     RESULT.addSon("or");
                                                     RESULT.addSon(b);
                                                 :}
-|expresion_relacional:a  RNOT   expresion_relacional:b            {:
-                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(),(Operacion)b.getIns(), Operacion.Tipo_operacion.NOT));
-                                                    RESULT.addSon(a);
+|RNOT   expresion_relacional:a            {:
+                                                    RESULT=new Produccion(new Nodo("Expresion_Relacional"), new Operacion((Operacion)a.getIns(), Operacion.Tipo_operacion.NOT));
+                                                    
                                                     RESULT.addSon("not");
-                                                    RESULT.addSon(b);
+                                                    RESULT.addSon(a);
                                                 :}
 | expresion:a                                       {:
                                                     RESULT = a;
@@ -812,6 +813,12 @@ expresion  ::=
                                                     RESULT.addSon("(");
                                                     RESULT.addSon(a);
                                                     RESULT.addSon(")");
+                                                :}
+|  CORIZQ expresion_relacional:a CORDER         {:                                                
+                                                    RESULT=new Produccion(new Nodo("Expresion"), new Operacion((Operacion)a.getIns(),Operacion.Tipo_operacion.PARENTESIS));
+                                                    RESULT.addSon("[");
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon(")]");
                                                 :}
 |expresion_valor:a                              {:
                                                  RESULT= a ;

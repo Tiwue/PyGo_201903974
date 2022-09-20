@@ -40,8 +40,22 @@ public class Impresion implements Instruccion {
     }
 
     @Override
-    public String traducirGo() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String traducirGo(int tabulaciones) {
+        String traduccion = "";
+        String tabs = "";
+        for (int i = 0; i < tabulaciones; i++) {
+            tabs += "    ";
+        }
+        traduccion += tabs;
+        if(tipo == Tipo_print.PRINT){
+            traduccion += "fmt.Print(";
+        }else if(tipo== Tipo_print.PRINTLN){
+            traduccion += "fmt.Println(";
+        }
+        
+
+        traduccion += this.expresion.traducirGo(0) + " )";
+        return traduccion + "\n";
     }
 
 }
