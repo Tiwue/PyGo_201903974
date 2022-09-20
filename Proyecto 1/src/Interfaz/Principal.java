@@ -264,6 +264,7 @@ public class Principal extends javax.swing.JFrame {
                 traduccionGolang = traducirIntruccionesGo(instrucciones);
                 textArea_Go.setText(traduccionGolang);
                 textArea_Python.setText(traduccionPython);
+                this.arbol.graficar();
             } else {
                 imprimir("Se encontraton Errores en la entrada\n Generando Reporte de  Errores...");
                 generarReporteErrores();
@@ -301,7 +302,8 @@ public class Principal extends javax.swing.JFrame {
 
         return traduccion;
     }
-
+    
+    
     public String traducirIntruccionesGo(LinkedList<Instruccion> instrucciones) {
         if (instrucciones == null) {
             return ("No es posible ejecutar las instrucciones porque\r\n"
@@ -325,7 +327,9 @@ public class Principal extends javax.swing.JFrame {
 
         return traduccion;
     }
-
+    
+   
+    
     public String calcularEspacios(int espacios) {
         String cadena = "";
         for (int i = 0; i < espacios - 1; i++) {

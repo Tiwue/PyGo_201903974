@@ -631,6 +631,7 @@ condicion::=
                                                                                                     RESULT.addSon(c);
                                                                                                     RESULT.addSon("fin_segun");
                                                                                                 :}
+
 ;
  
 cases::=
