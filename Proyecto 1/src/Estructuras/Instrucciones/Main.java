@@ -13,11 +13,15 @@ import java.util.LinkedList;
 public class Main implements Instruccion {
 
     private final LinkedList<Instruccion> listaInstrucciones;
+    public static LinkedList<Instruccion> listaFunyMet;
     
-    public Main (LinkedList<Instruccion> listaInstrucciones){
+    public Main(LinkedList<Instruccion> listaInstrucciones){
     this.listaInstrucciones = listaInstrucciones;
     }
     
+    public void addFunyMet(Instruccion instruccion){
+         this.listaFunyMet.add(instruccion);
+    }
     
     @Override
     public String traducirPython(int tabulaciones) {

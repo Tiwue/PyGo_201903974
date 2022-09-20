@@ -12,6 +12,7 @@ public class sym {
   public static final int CORDER = 6;
   public static final int IDENTIFICADOR = 45;
   public static final int PARIZQ = 3;
+  public static final int RFIN_FUNCION = 76;
   public static final int PTCOMA = 2;
   public static final int RMIENTRAS = 54;
   public static final int RAND = 28;
@@ -21,9 +22,11 @@ public class sym {
   public static final int ROR = 27;
   public static final int FLOATDATO = 37;
   public static final int NOMVARIABLE = 35;
+  public static final int REJECUTAR = 77;
   public static final int RIF = 52;
   public static final int RREPETIR = 69;
   public static final int RENTONCES = 56;
+  public static final int RIMPRIMIR_NL = 78;
   public static final int POR = 17;
   public static final int RHASTA_QUE = 70;
   public static final int RIGUAL = 25;
@@ -61,6 +64,7 @@ public class sym {
   public static final int ELSE = 53;
   public static final int MENOS = 16;
   public static final int RCONVALOR = 34;
+  public static final int RFUNCION = 75;
   public static final int MAS = 15;
   public static final int EOF = 0;
   public static final int RINICIO = 30;
@@ -80,6 +84,7 @@ public class sym {
   public static final int RCOMO = 33;
   public static final int STRING = 44;
   public static final int RPARA = 63;
+  public static final int RIMPRIMIR = 79;
   public static final int INTERROGDER = 14;
   public static final int LLAVIZQ = 7;
   public static final int RFALSO = 47;
@@ -158,7 +163,12 @@ public class sym {
   "RRETORNAR",
   "RMETODO",
   "RFIN_METODO",
-  "RCON_PARAMETROS"
+  "RCON_PARAMETROS",
+  "RFUNCION",
+  "RFIN_FUNCION",
+  "REJECUTAR",
+  "RIMPRIMIR_NL",
+  "RIMPRIMIR"
   };
 }
 

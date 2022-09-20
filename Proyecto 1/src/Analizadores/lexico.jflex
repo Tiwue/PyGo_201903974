@@ -89,6 +89,11 @@ IDENTIFICADOR = ([a-zA-ZñÑ])([a-z0-9A-Z_ñÑ])*
 "metodo"            {return new Symbol(sym.RMETODO,yyline,yychar,yytext());}
 "fin_metodo"        {return new Symbol(sym.RFIN_METODO,yyline,yychar,yytext());}
 "con_parametros"    {return new Symbol(sym.RCON_PARAMETROS,yyline,yychar,yytext());}
+"funcion"           {return new Symbol(sym.RFUNCION,yyline,yychar,yytext());}
+"fin_funcion"       {return new Symbol(sym.RFIN_FUNCION,yyline,yychar,yytext());}
+"ejecutar"          {return new Symbol(sym.REJECUTAR,yyline,yychar,yytext());}
+"imprimir"          {return new Symbol(sym.RIMPRIMIR,yyline,yychar,yytext());}
+"imprimir_nl"       {return new Symbol(sym.RIMPRIMIR_NL,yyline,yychar,yytext());}
 
 "¿"                 {return new Symbol(sym.INTERROGIZQ,yyline,yychar, yytext());}
 "?"                 {return new Symbol(sym.INTERROGDER,yyline,yychar, yytext());}

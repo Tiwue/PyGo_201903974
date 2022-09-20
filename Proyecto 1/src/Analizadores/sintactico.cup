@@ -18,6 +18,9 @@ import Estructuras.Instrucciones.DoWhile;
 import Estructuras.Instrucciones.Return;
 import Estructuras.Instrucciones.Metodo;
 import Estructuras.Instrucciones.Parametro;
+import Estructuras.Instrucciones.Funcion;
+import Estructuras.Instrucciones.Impresion;
+import Estructuras.Instrucciones.Llamada;
 import java.util.LinkedList;
 import Estructuras.*;
 
@@ -27,7 +30,7 @@ parser code
      * Variable en la que se almacena el arbol de sintaxis abstracta que se 
      * genera luego del analisis sintáctico.
      */
-    public LinkedList<Instruccion> AST;
+    public LinkedList<Instruccion> AST= new LinkedList<>();
     public Arbol arbol;
     /**
      * Método al que se llama automáticamente ante algún error sintactico.
@@ -64,7 +67,7 @@ terminal String RVERDADERO,RFALSO;
 terminal String DECIMAL;
 terminal String IGUAL;
 terminal String UMENOS;
-terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS, RREPETIR, RHASTA_QUE,RRETORNAR,RMETODO, RFIN_METODO, RCON_PARAMETROS;
+terminal String REVALUAR,RIF,ELSE,RMIENTRAS,RSI,RENTONCES,RFIN_SI,RELSE,ROSI,RSEGUN,RHACER,RFIN_SEGUN, RPARA, RHASTA, RFIN_PARA, RCON, RINCREMENTAL, RFIN_MIENTRAS, RREPETIR, RHASTA_QUE,RRETORNAR,RMETODO, RFIN_METODO, RCON_PARAMETROS,RFUNCION, RFIN_FUNCION,REJECUTAR,RIMPRIMIR_NL,RIMPRIMIR;
 
 non terminal ini;
 non terminal Produccion instrucciones;
@@ -80,6 +83,7 @@ non terminal Produccion expresion_valor;
 non terminal Produccion condicion;
 non terminal Produccion returns;
 non terminal Produccion listaParametros;
+non terminal Produccion instruccionesFuncion;
 
 precedence left ROR;
 precedence left RAND;
@@ -98,7 +102,10 @@ start with ini;
 ini::= globales:a                                {:
                                                     //se guarda el AST, que es la lista principal de instrucciones en la variable
                                                     //AST que se definió dentro del parser
-                                                    parser.AST=a.getInstructions();
+                                                    for(Instruccion ins: a.getInstructions()){
+                                                    parser.AST.add(ins);
+                                                    }
+                                                    
                                                     Nodo NODERAIZ = new Nodo("INIT"); NODERAIZ.addSon(a.getNode());
                                                     parser.arbol=new Arbol(NODERAIZ);
                                                 :}
@@ -130,7 +137,30 @@ global::=
 ;
 
 instrucciones ::= 
-   instrucciones:a instruccion:b                {:
+  instrucciones:a instruccion:b                {:
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT.addIns(b.getIns());
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon(b);
+                                                :}
+ 
+ | instruccion:a                                {:
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), new LinkedList<>());
+                                                    RESULT.addIns(a.getIns());
+                                                    RESULT.addSon(a);
+                                                :}   
+ | error instruccion                            
+
+; 
+
+instruccionesFuncion::=
+      instruccionesFuncion:a instruccion:b                {:
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT.addIns(b.getIns());
+                                                    RESULT.addSon(a);
+                                                    RESULT.addSon(b);
+                                                :}
+   | instruccionesFuncion:a returns:b                {:
                                                     RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
                                                     RESULT.addIns(b.getIns());
                                                     RESULT.addSon(a);
@@ -140,11 +170,16 @@ instrucciones ::=
                                                     RESULT=new Produccion(new Nodo("Instrucciones"), new LinkedList<>());
                                                     RESULT.addIns(a.getIns());
                                                     RESULT.addSon(a);
-                                                :}        
+                                                :}    
+ | returns:a                                    {:
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), new LinkedList<>());
+                                                    RESULT.addIns(a.getIns());
+                                                    RESULT.addSon(a);
+                                                :}      
  | error instruccion 
+ | error returns 
 
-; 
-
+;
 instruccion ::= 
    REVALUAR CORIZQ expresion_relacional:a CORDER PTCOMA    {:
                                                     RESULT=new Produccion(new Nodo("Instruccion"), new Evaluar((Operacion)a.getIns()));
@@ -310,23 +345,167 @@ instruccion ::=
                                                                                                     
                                                                                                 :}
 |RMETODO IDENTIFICADOR:a instrucciones:b RFIN_METODO                                            {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions()));
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions(), false));
+                                                                                                    parser.AST.add(new Metodo(a, b.getInstructions(), true));
                                                                                                     RESULT.addSon("metodo");
                                                                                                     RESULT.addSon(a);
                                                                                                     RESULT.addSon(b);
                                                                                                     RESULT.addSon("fin_metodo");
                                                                                                 :}
 |RMETODO IDENTIFICADOR:a RCON_PARAMETROS PARIZQ listaParametros:b PARDER instrucciones:c RFIN_METODO          {:
-                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions(), c.getInstructions()));
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Metodo(a, b.getInstructions(), c.getInstructions(), false));
+                                                                                                    parser.AST.add(new Metodo(a, b.getInstructions(), c.getInstructions(), true));
                                                                                                     RESULT.addSon("metodo");
                                                                                                     RESULT.addSon(a);
                                                                                                     RESULT.addSon("con_parametros");
                                                                                                     RESULT.addSon("(");
                                                                                                     RESULT.addSon(b);
                                                                                                     RESULT.addSon(")");
+                                                                                                    RESULT.addSon(c);
                                                                                                     RESULT.addSon("fin_metodo");
                                                                                                 :}
+|RFUNCION IDENTIFICADOR:a NUMDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a FLOATDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(),true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a CADDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.CADENA, c.getInstructions(),false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.CADENA, c.getInstructions(),true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a BOOLDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.BOOLEAN, c.getInstructions(),false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.BOOLEAN, c.getInstructions(),true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a CARDATO:b instruccionesFuncion:c RFIN_FUNCION                                            {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.CARACTER, c.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.CARACTER, c.getInstructions(),true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a NUMDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO,c.getInstructions(), d.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO,c.getInstructions(), d.getInstructions(), true));
+                                                                                                    
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a FLOATDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.NUMERO, c.getInstructions(), d.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.NUMERO,c.getInstructions(), d.getInstructions(), true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a CADDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.CADENA, c.getInstructions(), d.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.CADENA,c.getInstructions(), d.getInstructions(), true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a BOOLDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.BOOLEAN, c.getInstructions(), d.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.BOOLEAN,c.getInstructions(), d.getInstructions(), true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
+|RFUNCION IDENTIFICADOR:a CARDATO:b RCON_PARAMETROS PARIZQ listaParametros:c PARDER instruccionesFuncion:d RFIN_FUNCION          {:
+                                                                                                    RESULT= new Produccion(new Nodo("Instruccion"), new Funcion(a, Funcion.Tipo_dato.CARACTER, c.getInstructions(), d.getInstructions(), false));
+                                                                                                    parser.AST.add(new Funcion(a, Funcion.Tipo_dato.CARACTER,c.getInstructions(), d.getInstructions(), true));
+                                                                                                    RESULT.addSon("funcion");
+                                                                                                    RESULT.addSon(a);
+                                                                                                    RESULT.addSon(b);
+                                                                                                    RESULT.addSon("con_parametros");
+                                                                                                    RESULT.addSon("(");
+                                                                                                    RESULT.addSon(c);
+                                                                                                    RESULT.addSon(")");
+                                                                                                    RESULT.addSon(d);
+                                                                                                    RESULT.addSon("fin_funcion");
+                                                                                                :}
 
+|REJECUTAR IDENTIFICADOR:a PARIZQ PARDER PTCOMA                                                  {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Llamada"), new Llamada(a));
+                                                                                                        RESULT.addSon("ejecutar");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon("(");
+                                                                                                        RESULT.addSon(")");
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}  
+|REJECUTAR IDENTIFICADOR:a PARIZQ  listaVariables:b PARDER PTCOMA                                {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Llamada"), new Llamada(a, b));
+                                                                                                        RESULT.addSon("ejecutar");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon("(");
+                                                                                                        RESULT.addSon(b);
+                                                                                                        RESULT.addSon(")");
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}
+|RIMPRIMIR expresion_relacional:a PTCOMA                                                            {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Impresion"), new Impresion((Operacion)a.getIns(), Impresion.Tipo_print.PRINT));
+                                                                                                        RESULT.addSon("imprimir");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}
+
+|RIMPRIMIR_NL expresion_relacional:a PTCOMA                                                         {:  
+                                                                                                        RESULT=new Produccion(new Nodo("Impresion"), new Impresion((Operacion)a.getIns(), Impresion.Tipo_print.PRINTLN));
+                                                                                                        RESULT.addSon("imprimir");
+                                                                                                        RESULT.addSon(a);
+                                                                                                        RESULT.addSon(";");
+                                                                                                        :}
 ;
 
 listaParametros ::=
