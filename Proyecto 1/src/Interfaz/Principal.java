@@ -9,6 +9,7 @@ import Estructuras.Instrucciones.Instruccion;
 import Estructuras.listaErrores;
 import Estructuras.MiError;
 import analizadores.Sintactico;
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -56,10 +57,10 @@ public class Principal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         botonCargar = new javax.swing.JButton();
         botonAnalizar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        botonGuardar = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
         Consola = new javax.swing.JTextArea();
-        botonReportes = new javax.swing.JButton();
+        botonGraficar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -157,7 +158,12 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
+        botonGuardar.setText("Guardar Salidas");
+        botonGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonGuardarActionPerformed(evt);
+            }
+        });
 
         Consola.setBackground(new java.awt.Color(0, 0, 0));
         Consola.setColumns(20);
@@ -165,7 +171,12 @@ public class Principal extends javax.swing.JFrame {
         Consola.setRows(5);
         jScrollPane5.setViewportView(Consola);
 
-        botonReportes.setText("Reportes");
+        botonGraficar.setText("Graficar AST");
+        botonGraficar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonGraficarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,12 +192,12 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+                                .addComponent(botonGuardar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                                 .addComponent(botonAnalizar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(botonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(botonReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(botonGraficar, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 962, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 2, Short.MAX_VALUE)))
@@ -204,11 +215,11 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(botonCargar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(botonGraficar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(botonAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane5))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
@@ -245,6 +256,50 @@ public class Principal extends javax.swing.JFrame {
         interpretar(textArea_Entrada.getText());
     }//GEN-LAST:event_botonAnalizarActionPerformed
 
+    private void botonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGuardarActionPerformed
+        try (
+                 FileWriter fileWriter = new FileWriter("./Reportes\\\\Python_201903974\\\\Salida.py")) {
+            String datos = textArea_Python.getText();
+            fileWriter.write(datos);
+            fileWriter.close();
+            System.out.println("Archivo guardado");
+            imprimir("Archivo Python Guardado");
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el archivo");
+        }
+
+        try (
+                 FileWriter fileWriter = new FileWriter("./Reportes\\\\Go_201903974\\\\Salida.go")) {
+            String datos = textArea_Go.getText();
+            fileWriter.write(datos);
+            fileWriter.close();
+            System.out.println("Archivo guardado");
+            imprimir("Archivo Go Guardado");
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el archivo");
+        }
+    }//GEN-LAST:event_botonGuardarActionPerformed
+
+    private void botonGraficarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonGraficarActionPerformed
+        try {
+            this.arbol.graficar();
+            try {
+
+                File objetofile = new File("./Reportes\\ARBOL_201903974\\ARBOL.jpg");
+                Desktop.getDesktop().open(objetofile);
+
+            } catch (IOException ex) {
+
+                System.out.println(ex);
+
+            }
+
+        } catch (IOException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_botonGraficarActionPerformed
+
     private void interpretar(String texto) {
         try {
 
@@ -264,7 +319,7 @@ public class Principal extends javax.swing.JFrame {
                 traduccionGolang = traducirIntruccionesGo(instrucciones);
                 textArea_Go.setText(traduccionGolang);
                 textArea_Python.setText(traduccionPython);
-                this.arbol.graficar();
+                
             } else {
                 imprimir("Se encontraton Errores en la entrada\n Generando Reporte de  Errores...");
                 generarReporteErrores();
@@ -302,8 +357,7 @@ public class Principal extends javax.swing.JFrame {
 
         return traduccion;
     }
-    
-    
+
     public String traducirIntruccionesGo(LinkedList<Instruccion> instrucciones) {
         if (instrucciones == null) {
             return ("No es posible ejecutar las instrucciones porque\r\n"
@@ -327,9 +381,7 @@ public class Principal extends javax.swing.JFrame {
 
         return traduccion;
     }
-    
-   
-    
+
     public String calcularEspacios(int espacios) {
         String cadena = "";
         for (int i = 0; i < espacios - 1; i++) {
@@ -380,8 +432,8 @@ public class Principal extends javax.swing.JFrame {
             cadena += lineas[lineaactual] + "\n";
             lineaactual += 1;
         }
-        cadena +="</pre>";
-        cadena = cadena+ "\n" + "</body>\n" + "</html>";
+        cadena += "</pre>";
+        cadena = cadena + "\n" + "</body>\n" + "</html>";
         FileWriter archivo = null;
         PrintWriter print = null;
         try {
@@ -397,9 +449,22 @@ public class Principal extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
+               
+            try {
+
+                File objetofile = new File("./Reportes\\ERRORES_201903974\\ERRORES.html");
+                Desktop.getDesktop().open(objetofile);
+
+            } catch (IOException ex) {
+
+                System.out.println(ex);
+
+            }
             } else {
             }
         }
+        
+        
     }
     /**
      * @param args the command line arguments
@@ -410,8 +475,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextArea Consola;
     private javax.swing.JButton botonAnalizar;
     private javax.swing.JButton botonCargar;
-    private javax.swing.JButton botonReportes;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton botonGraficar;
+    private javax.swing.JButton botonGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
