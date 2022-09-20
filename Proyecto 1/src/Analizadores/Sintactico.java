@@ -1174,10 +1174,9 @@ class CUP$Sintactico$actions {
 		int bright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Produccion b = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instrucciones Globales"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
-                                                    RESULT.addSon(b);
+                                                    a.addSon(b);
                                                 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("globales",2, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
@@ -1191,7 +1190,7 @@ class CUP$Sintactico$actions {
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Produccion a = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instruccion"), new LinkedList<>());
+                                                    RESULT=new Produccion(new Nodo("instrucciones"), new LinkedList<>());
                                                     RESULT.addIns(a.getIns());
                                                     RESULT.addSon(a);
                                                 
@@ -1216,7 +1215,7 @@ class CUP$Sintactico$actions {
 		int aright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).right;
 		Produccion a = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instruccion"), new Main(a.getInstructions()));
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), new Main(a.getInstructions()));
                                                     RESULT.addSon("inicio");
                                                     RESULT.addSon(a);
                                                     RESULT.addSon("fin");
@@ -1236,10 +1235,9 @@ class CUP$Sintactico$actions {
 		int bright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Produccion b = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a ;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
-                                                    RESULT.addSon(b);
+                                                    a.addSon(b);
                                                 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("instrucciones",1, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
             }
@@ -1281,9 +1279,8 @@ class CUP$Sintactico$actions {
 		int bright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Produccion b = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
                                                     RESULT.addSon(b);
                                                 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("instruccionesFuncion",14, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);
@@ -1301,9 +1298,8 @@ class CUP$Sintactico$actions {
 		int bright = ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()).right;
 		Produccion b = (Produccion)((java_cup.runtime.Symbol) CUP$Sintactico$stack.peek()).value;
 		
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
                                                     RESULT.addSon(b);
                                                 
               CUP$Sintactico$result = parser.getSymbolFactory().newSymbol("instruccionesFuncion",14, ((java_cup.runtime.Symbol)CUP$Sintactico$stack.elementAt(CUP$Sintactico$top-1)), ((java_cup.runtime.Symbol)CUP$Sintactico$stack.peek()), RESULT);

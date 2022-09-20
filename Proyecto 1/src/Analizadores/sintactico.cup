@@ -114,13 +114,12 @@ ini::= globales:a                                {:
 
 globales::=
    globales:a global:b                {:
-                                                    RESULT=new Produccion(new Nodo("Instrucciones Globales"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
-                                                    RESULT.addSon(b);
+                                                    a.addSon(b);
                                                 :}
  | global:a                                {:
-                                                    RESULT=new Produccion(new Nodo("Instruccion"), new LinkedList<>());
+                                                    RESULT=new Produccion(new Nodo("instrucciones"), new LinkedList<>());
                                                     RESULT.addIns(a.getIns());
                                                     RESULT.addSon(a);
                                                 :}        
@@ -130,7 +129,7 @@ globales::=
 
 global::=
     RINICIO instrucciones:a RFIN                {:
-                                                    RESULT=new Produccion(new Nodo("Instruccion"), new Main(a.getInstructions()));
+                                                    RESULT=new Produccion(new Nodo("Instrucciones"), new Main(a.getInstructions()));
                                                     RESULT.addSon("inicio");
                                                     RESULT.addSon(a);
                                                     RESULT.addSon("fin");
@@ -139,10 +138,9 @@ global::=
 
 instrucciones ::= 
   instrucciones:a instruccion:b                {:
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a ;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
-                                                    RESULT.addSon(b);
+                                                    a.addSon(b);
                                                 :}
  
  | instruccion:a                                {:
@@ -156,15 +154,13 @@ instrucciones ::=
 
 instruccionesFuncion::=
       instruccionesFuncion:a instruccion:b                {:
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
                                                     RESULT.addSon(b);
                                                 :}
    | instruccionesFuncion:a returns:b                {:
-                                                    RESULT=new Produccion(new Nodo("Instrucciones"), a.getInstructions());
+                                                    RESULT=a;
                                                     RESULT.addIns(b.getIns());
-                                                    RESULT.addSon(a);
                                                     RESULT.addSon(b);
                                                 :}
  | instruccion:a                                {:

@@ -46,8 +46,24 @@ public class Produccion {
     }
     
     public void addSon(Produccion valor){
+        
         this.nodo.addSon(valor.getNode());
+    
     }
+    
+    public void addSons(Produccion valor){
+          LinkedList<Nodo> hijos = valor.getSons();
+        if(hijos!=null){
+        for(Nodo hijo:hijos){
+        this.nodo.addSon(hijo);
+        }
+        }else{
+        this.nodo.addSon(valor.getNode());
+         
+    }
+    }
+    
+   
     
     public Nodo getNode() {
         return nodo;
@@ -55,6 +71,10 @@ public class Produccion {
 
     public void setNodo(Nodo nodo) {
         this.nodo = nodo;
+    }
+    
+    public LinkedList<Nodo> getSons(){
+       return this.nodo.getHijos();
     }
 
     public Instruccion getIns() {
